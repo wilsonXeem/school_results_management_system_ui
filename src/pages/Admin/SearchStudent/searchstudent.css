@@ -1,0 +1,22 @@
+.search_student_input {
+  padding: 1rem 3rem 0rem;
+  display: flex;
+  align-items: center;
+}
+
+.search_student_input p {
+  margin-right: 1rem;
+}
+
+.search_result {
+  padding: 0rem 3rem;
+}
+
+.search_result h3 {
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.search_result h3:hover{
+    background-color: #d1dada;
+}

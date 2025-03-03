@@ -1,0 +1,80 @@
+/* Student Management Container */
+.edit_student {
+  display: flex;
+  align-items: center;
+}
+
+.student-management {
+  max-width: 600px;
+  margin: 20px;
+  padding: 0px 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.student-management h2 {
+  margin-bottom: 15px;
+  margin-top: 0rem;
+  color: #333;
+}
+
+/* Input Fields */
+.student-management input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  display: block;
+  text-align: center;
+}
+
+/* Buttons */
+.student-management button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.student-management button:hover {
+  background: #0056b3;
+}
+
+/* Message Display */
+.student-management p {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+}
+
+.student-management .error {
+  color: red;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .student-management {
+    padding: 15px;
+  }
+
+  .student-management input {
+    font-size: 14px;
+  }
+
+  .student-management button {
+    font-size: 14px;
+  }
+}

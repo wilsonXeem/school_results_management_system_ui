@@ -1,0 +1,115 @@
+.student_db {
+  padding: 1rem 2rem;
+}
+
+.student_db table td {
+  padding: 0.1rem;
+}
+
+.student_dashboard_header_img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.student_dashboard_header_img img {
+  width: 100%;
+  height: 100%;
+}
+
+.student_dashboard_header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.student_dashboard_header_title {
+  text-align: center;
+}
+
+.student_dashboard_header_title h3 {
+  margin: 0rem;
+}
+
+.student_dashboard_body {
+  padding: 1rem 2rem;
+}
+
+.student_dashboard_body_title {
+  padding: 1rem 0rem;
+}
+
+.student_dashboard_body_title h2 {
+  margin: 0rem;
+}
+
+.student_dashboard_body_details {
+  display: flex;
+}
+
+.student_dashboard_body_details p {
+  margin: 0rem 1rem 0rem 0rem;
+  text-transform: uppercase;
+}
+
+.student_dashboard_body_details b {
+  font-size: large;
+}
+
+.student_dashboard_body_details select {
+  border: none;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.student_dashboard_body_details select:focus {
+  outline: none;
+}
+
+.gp_tab {
+  display: grid;
+  grid-template-columns: 5% 1fr;
+  padding: 0rem 1rem;
+  /* margin-top: 1rem; */
+}
+
+.gp_tab div {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.gp_tab div div {
+  display: flex;
+  flex-direction: row;
+  margin-left: 4rem;
+}
+
+.gp_tab div div p {
+  margin-right: 0.2rem;
+}
+
+.transcript_btn button {
+  border: none;
+  background-color: #020263;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.signature {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7rem;
+  font-size: 1rem;
+}
+
+/* .signature div {
+  text-align: center;
+  padding: 0rem 4rem;
+}
+
+.signature div p {
+  margin: 0rem;
+} */

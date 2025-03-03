@@ -1,0 +1,12 @@
+.change_password{
+    margin-top: 2rem;
+    cursor: pointer;
+}
+
+.admin_login_form div{
+    text-align: center;
+}
+
+.admin_login_form div button{
+    padding: 0.5rem;
+}

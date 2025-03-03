@@ -1,0 +1,228 @@
+.student_dashboard {
+  padding: 1rem;
+}
+
+.student_db {
+  padding: 1rem 2rem;
+}
+.student_dashboard_header_img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.student_dashboard_header_img img {
+  width: 100%;
+  height: 100%;
+}
+
+.d_head {
+  background-color: rgb(16, 247, 170);
+  padding: 1rem 0rem;
+}
+
+.student_dashboard_head {
+  display: grid;
+  grid-template-columns: 15% 1fr 15%;
+  padding: 1rem 1rem 0rem;
+}
+
+.student_dashboard_head div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.passport_img {
+  height: 8rem;
+  width: 6rem;
+}
+
+.passport_img img {
+  width: 100%;
+}
+
+.student_dashboard_head_title {
+  text-align: center;
+}
+
+.student_dashboard_head_title h1 {
+  margin: 0rem;
+  font-size: 1.6rem;
+  text-transform: uppercase;
+}
+
+.student_dashboard_head_title p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0rem;
+  text-transform: uppercase;
+}
+
+.student_dashboard_head_title h2 {
+  margin: 0rem;
+}
+
+.student_dashboard_body {
+  padding: 0rem 0rem;
+}
+
+.student_dashboard_body_title {
+  padding: 1rem 0rem;
+}
+
+.student_dashboard_body_title h2 {
+  margin: 0rem;
+}
+
+.student_dashboard_body_details {
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-direction: column; */
+  /* justify-content: center; */
+  margin-top: 1rem;
+}
+
+.student_dashboard_body_details div {
+  display: flex;
+}
+
+.student_dashboard_body_details p,
+.student_dashboard_body_details p b {
+  margin: 1rem 1rem 0rem 0rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.student_dashboard_body_details select {
+  border: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.student_dashboard_body_details select:focus {
+  outline: none;
+}
+
+.table {
+  font-size: 1rem;
+}
+
+.table td {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.gp_table {
+  display: grid;
+  grid-template-columns: 1fr 30%;
+  padding-left: 2rem;
+  /* margin-top: 1rem; */
+}
+
+.gp_table div {
+  display: flex;
+  align-items: center;
+}
+
+.gp_table div div {
+  display: flex;
+  margin-right: 4rem;
+}
+
+.gp_table div div p {
+  margin-right: 0.2rem;
+}
+
+.transcript_button {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.transcript_button button {
+  border: none;
+  background-color: #020263;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.totals {
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 1.2rem;
+}
+
+.totals div {
+  display: flex;
+  align-items: center;
+  margin: 0rem 1rem;
+}
+
+.totals p {
+  margin: 0rem 0.5rem 0rem 0rem;
+}
+
+.totals h3 {
+  margin: 0rem 0rem 0rem 0rem;
+}
+
+.total_grade {
+  font-size: 1.2rem;
+}
+
+.signature {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  font-size: 1.2rem;
+}
+
+.signature div {
+  text-align: center;
+  padding: 0rem 4rem;
+}
+
+.signature div p {
+  margin: 0rem;
+}
+
+.gp_tab {
+  display: grid;
+  grid-template-columns: 5% 1fr;
+  padding: 0rem 1rem;
+  /* margin-top: 1rem; */
+}
+
+.gp_tab div {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.gp_tab div div {
+  display: flex;
+  flex-direction: row;
+  margin-left: 4rem;
+}
+
+.gp_tab div div p {
+  margin-right: 0.2rem;
+}
+
+.grade_table {
+  width: 100%;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.grade_table table {
+  width: 100%;
+}
+
+.grade_table td {
+  padding-left: 0.8rem;
+  font-size: 1.2rem;
+}

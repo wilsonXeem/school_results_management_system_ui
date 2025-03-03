@@ -1,0 +1,55 @@
+.course_reg_upload select {
+  text-transform: uppercase;
+  height: 2rem;
+  border: 1px solid #020263;
+  border-radius: 2px;
+  margin: 0rem 1rem;
+}
+
+.course_reg_upload select:focus {
+  outline: none;
+}
+
+.course_reg_upload button {
+  border: none;
+  border-radius: 2px;
+  background-color: #020263;
+  color: white;
+  font-size: larger;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+}
+
+.course_reg_upload {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 0.1px solid #020263;
+}
+
+.tabl{
+  /* width: 100%; */
+  padding: 1rem 0rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.tabl table {
+  width: 100%;
+}
+
+.tabl table th{
+  background-color: black;
+  color: white;
+  padding: 0.1rem 0.3rem;
+  text-transform: uppercase;
+}
+
+
+.left{
+  text-align: left;
+}
+
+.center{
+  text-align: center;
+}

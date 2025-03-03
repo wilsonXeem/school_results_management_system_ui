@@ -1,0 +1,23 @@
+.corses div{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.other_externals{
+    padding: 0rem 0rem 0rem 4rem;
+}
+
+.other_externals div{
+    display: flex;
+}
+
+.other_externals button{
+    background-color: #ffccbc;
+    border: none;
+    border-radius: 2px;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin: 0.5rem;
+}

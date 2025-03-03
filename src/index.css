@@ -1,0 +1,65 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* General print styles */
+@media print {
+  @page {
+    size: landscape; /* Set the page orientation to landscape */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .table {
+    width: 100%;
+    margin: 0;
+    /* border-collapse: collapse; */
+    font-size: xx-small;
+  }
+
+  .table th {
+    border: 1px solid black;
+  }
+
+  .table thead th {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+  }
+
+  .table tbody tr:nth-child(odd) {
+    background-color: #eeeeee;
+  }
+
+  /* Ensure content fits the page */
+  table {
+    width: 100%;
+  }
+
+  /* Hide unnecessary elements like buttons */
+  button {
+    display: none;
+  }
+
+  /* Force page breaks after elements */
+  .page_break {
+    page-break-before: always;
+  }
+
+  .page_break td{
+    padding: 0rem;
+  }
+}

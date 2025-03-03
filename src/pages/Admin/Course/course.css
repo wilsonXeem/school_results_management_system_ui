@@ -1,0 +1,54 @@
+.current_session {
+  display: flex;
+  align-items: center;
+}
+
+.current_session h3 {
+  margin: 0rem 5rem 0rem 0.5rem;
+}
+
+.current_session p {
+  margin: 0rem;
+}
+
+.course_table {
+  /* width: 100%; */
+  padding: 1rem 0.5rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.course_table input{
+  height: 100%;
+  width: 100%;
+  border: solid 0.5px black;
+  height: 1.5rem;
+}
+
+.course_table input:focus{
+  background-color: #e6f0f7;
+  outline: none;
+
+}
+
+.course_table table {
+  width: 100%;
+}
+
+.course_table table th {
+  background-color: black;
+  color: white;
+  padding: 0.5rem;
+}
+
+.course_table table td {
+  padding: 0.2rem 0.5rem;
+}
+
+.left {
+  text-align: left;
+}
+
+.center {
+  text-align: center;
+}

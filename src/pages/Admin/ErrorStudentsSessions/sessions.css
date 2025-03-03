@@ -1,0 +1,62 @@
+.current_session {
+  display: flex;
+  align-items: baseline;
+  padding: 1rem 2rem;
+}
+
+.current_session h2 {
+  margin: 0rem 0.5rem;
+}
+
+.previous_sessions_container {
+  padding: 1rem 2rem;
+}
+
+.previous_sessions_container p {
+  margin-bottom: 0rem;
+}
+
+.previous_sessions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  width: 100%;
+}
+
+.previous_sessions h3 {
+  display: flex;
+  align-items: center;
+}
+
+.levels {
+  padding: 0rem 0rem 0rem 4rem;
+}
+
+.level {
+  padding: 0rem 0rem 0rem 2rem;
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  margin: 1rem;
+  width: 35rem;
+}
+
+.level div {
+  display: flex;
+  align-items: center;
+}
+
+.level button {
+  border: none;
+  padding: 1rem;
+  margin: 0.5rem;
+  font-size: medium;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.blue {
+  background-color: #bbdefb;
+}
+
+.gray {
+  background-color: #e0e0e0;
+}
