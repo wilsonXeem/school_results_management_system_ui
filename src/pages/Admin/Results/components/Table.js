@@ -11,6 +11,24 @@ function Table({ students }) {
   const current_semester = levels[level]?.[semester] || {};
   const course_codes = Object.keys(current_semester);
 
+  const external_students = students.filter((student) => {
+    if (student.courses.length > course_codes.length) {
+      return student;
+    }
+  });
+
+  const externals = external_students.map((stud) => {
+    const _id = stud.student_id;
+    const fullname = stud.fullname;
+    const reg_no = stud.reg_no;
+    const courses = stud.courses.filter(
+      (course) => !course_codes.includes(course.course_code)
+    );
+    return { _id, fullname, reg_no, courses };
+  });
+
+  console.log(externals)
+
   return (
     <div className="tabl" id="myTable">
       <table>
@@ -39,7 +57,9 @@ function Table({ students }) {
               >
                 {student.fullname}
               </td>
-              <td onClick={() => navigate(`/admin/student/${student.student_id}`)}>
+              <td
+                onClick={() => navigate(`/admin/student/${student.student_id}`)}
+              >
                 {student.reg_no}
               </td>
               {course_codes.map((code) => {
@@ -92,7 +112,7 @@ function Table({ students }) {
         </tbody>
       </table>
 
-      {/* {external_students.length > 0 && (
+      {externals.length > 0 && (
         <div>
           <h3 className="page_break" style={{ marginLeft: "1rem" }}>
             Other Courses Results
@@ -107,42 +127,44 @@ function Table({ students }) {
               </tr>
             </thead>
             <tbody>
-              {external_students.map(({ student, externals }, i) => (
-                <tr key={student._id}>
-                  <td className="center">{i + 1}</td>
-                  <td>{student.fullname}</td>
-                  <td>{student.reg_no}</td>
-                  <td>
-                    {externals.map((course) => (
-                      <div
-                        key={course.course_code}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem",
-                        }}
-                      >
-                        <span>{course.course_code}</span>
-                        <span style={{ fontWeight: "bold" }}>
-                          {Number(course.total).toFixed()}
-                        </span>
-                        <span
+              {externals.map(
+                ({ _id, fullname, reg_no, courses }, i) => (
+                  <tr key={_id}>
+                    <td className="center">{i + 1}</td>
+                    <td>{fullname}</td>
+                    <td>{reg_no}</td>
+                    <td>
+                      {courses.map((course) => (
+                        <div
+                          key={course.course_code}
                           style={{
-                            fontWeight: "bold",
-                            color: course.grade === 0 ? "red" : "black",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1rem",
                           }}
                         >
-                          {["F", "E", "D", "C", "B", "A"][course.grade]}
-                        </span>
-                      </div>
-                    ))}
-                  </td>
-                </tr>
-              ))}
+                          <span>{course.course_code}</span>
+                          <span style={{ fontWeight: "bold" }}>
+                            {Number(course.total).toFixed()}
+                          </span>
+                          <span
+                            style={{
+                              fontWeight: "bold",
+                              color: course.grade === 0 ? "red" : "black",
+                            }}
+                          >
+                            {["F", "E", "D", "C", "B", "A"][course.grade]}
+                          </span>
+                        </div>
+                      ))}
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

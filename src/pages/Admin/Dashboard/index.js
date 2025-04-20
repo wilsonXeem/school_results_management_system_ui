@@ -39,6 +39,9 @@ function AdminDashboard() {
         <button onClick={() => navigate("/admin/student/management")}>
           Search student
         </button>
+        <button onClick={() => navigate("/admin/topstudents")} style={{marginLeft:"1rem"}}>
+          Top student
+        </button>
       </div>
       {load && <Loader />}
       <div class="admin_dashboard_boxes">
