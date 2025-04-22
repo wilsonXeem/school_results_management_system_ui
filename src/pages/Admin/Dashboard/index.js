@@ -39,7 +39,10 @@ function AdminDashboard() {
         <button onClick={() => navigate("/admin/student/management")}>
           Search student
         </button>
-        <button onClick={() => navigate("/admin/topstudents")} style={{marginLeft:"1rem"}}>
+        <button
+          onClick={() => navigate("/admin/topstudents")}
+          style={{ marginLeft: "1rem" }}
+        >
           Top student
         </button>
       </div>
@@ -70,6 +73,11 @@ function AdminDashboard() {
           title={"Error Students"}
           color={"error"}
           url={"/admin/faculty/error/students/sessions"}
+        />
+        <Box
+          title={"Professionals"}
+          color={"professionals"}
+          url={"/admin/professionals/sessions"}
         />
       </div>
     </div>

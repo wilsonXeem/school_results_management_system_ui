@@ -41,14 +41,11 @@ function Table({ students }) {
             <th className="center">S/N</th>
             <th style={{ textAlign: "left" }}>Names</th>
             <th>Reg. No</th>
-            {course_codes.map((code) => (
+            {professional_courses.map((code) => (
               <th key={code} className="center">
                 {code}
               </th>
             ))}
-            <th className="center">GPA</th>
-            {semester === "2" && <th className="center">Session CGPA</th>}
-            {semester === "2" && <th className="center">Overall CGPA</th>}
           </tr>
         </thead>
         <tbody>
@@ -66,7 +63,7 @@ function Table({ students }) {
               >
                 {student.reg_no}
               </td>
-              {course_codes.map((code) => {
+              {professional_courses.map((code) => {
                 const course = student.courses.find(
                   (c) => c.course_code === code
                 );
@@ -87,30 +84,6 @@ function Table({ students }) {
                   </td>
                 );
               })}
-              <td
-                className="center"
-                style={{
-                  fontWeight: "bold",
-                }}
-              >
-                {student?.gpa.toFixed(2)}
-              </td>
-              {semester === "2" && (
-                <>
-                  <td
-                    className="center"
-                    style={{
-                      fontWeight: "bold",
-                      color: student?.session_gpa < 2.5 ? "red" : "black",
-                    }}
-                  >
-                    {student?.session_gpa?.toFixed(2)}
-                  </td>
-                  <td className="center" style={{ fontWeight: "bold" }}>
-                    {student.cgpa?.toFixed(2)}
-                  </td>
-                </>
-              )}
             </tr>
           ))}
         </tbody>
