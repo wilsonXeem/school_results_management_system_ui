@@ -26,6 +26,10 @@ import ErrorStudentsSessions from "./pages/Admin/ErrorStudentsSessions";
 import OtherErrorStudentsSession from "./pages/Admin/ErrorStudentsSessions/OtherErrorStudentsSessions";
 import StudentManagement from "./pages/Admin/Student/EditStudent";
 import ExtractMoe from "./pages/Admin/Student/ExtractMOE";
+import TopStudents from "./pages/Admin/TopStudents";
+import Professionals from "./pages/Admin/Professionals";
+import ProfessionalsSessions from "./pages/Admin/ProfessionalsSessions";
+import OtherProfessionalsSessions from "./pages/Admin/ProfessionalsSessions/OtherProfessionalsSessions";
 
 import Student from "./pages/Student";
 import PasswordReset from "./pages/Student/PasswordReset";
@@ -50,6 +54,9 @@ function App() {
           <Route path="/admin/results/sessions" exact element={<ResultSessions />} />
           <Route path="/admin/results/sessions/:sesion" exact element={<OtherResultSessions />} />
           <Route path="/admin/results/:session/:class_id/:level/:semester" exact element={<Result />} />
+          <Route path="/admin/professionals/sessions" exact element={<ProfessionalsSessions />} />
+          <Route path="/admin/professionals/sessions/:sesion" exact element={<OtherProfessionalsSessions />} />
+          <Route path="/admin/professionals/:session/:class_id/:level/:semester" exact element={<Professionals />} />
           <Route path="/admin/faculty/courses" exact element={<Departments />} />
           <Route path="/admin/faculty/courses/:sesion" exact element={<OtherDepartments />} />
           <Route path="/admin/faculty/:session/courses/:code" exact element={<Department />} />
@@ -66,7 +73,8 @@ function App() {
           <Route path="/admin/faculty/error/students/sessions/:sesion" exact element={<OtherErrorStudentsSession/>}/>
           <Route path="/admin/faculty/error/students/list/:session/:_id/:level/:semester" exact element={<ErrorStudents />} />
           <Route path="/admin/student/management" exact element={<StudentManagement />} />
-          <Route path="/admin/moe" exact element={<ExtractMoe/>}/>
+          <Route path="/admin/moe" exact element={<ExtractMoe />} />
+          <Route path="/admin/topstudents" exact element={<TopStudents />} />
           
           {/* <Route path="/" exact element={<TableExtractor/>}/> */}
           <Route path="/student" exact element={<Student/>}/>
