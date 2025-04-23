@@ -14,8 +14,6 @@ function Table({ students }) {
   });
   const { level, semester, session } = useParams();
   const navigate = useNavigate();
-  const current_semester = levels[level][semester];
-  const course_codes = Object.keys(current_semester);
 
   return (
     <div class="table" id="myTable">
@@ -25,6 +23,7 @@ function Table({ students }) {
             <th className="center">s/n</th>
             <th>names</th>
             <th>reg.no</th>
+            <th>moe</th>
             {/* {course_codes.map((course_code) => (
               <th className="center">{course_code}</th>
             ))} */}
@@ -40,6 +39,7 @@ function Table({ students }) {
                     <td className="center">{i + 1}</td>
                     <td>{student.fullname}</td>
                     <td>{student.reg_no}</td>
+                    <td>{student.moe}</td>
                     {semester == "2" && (
                       <td
                         className="center"

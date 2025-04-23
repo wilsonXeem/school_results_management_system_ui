@@ -10,7 +10,7 @@ function Table({ students }) {
     }
     return 0;
   });
-  console.log(students)
+  console.log(students);
 
   return (
     <div class="table" id="myTable">
@@ -20,6 +20,7 @@ function Table({ students }) {
             <th className="center">s/n</th>
             <th>names</th>
             <th>reg.no</th>
+            <th>moe</th>
             <th className="center">current level</th>
             <th>error(s)- session: level: gpa</th>
           </tr>
@@ -33,14 +34,15 @@ function Table({ students }) {
                     <td className="center">{i + 1}</td>
                     <td>{student.fullname}</td>
                     <td>{student.reg_no}</td>
+                    <td>{student.moe}</td>
                     <td className="center">{student.current_level}</td>
                     {student.probation_sessions.length > 0 &&
                       student.probation_sessions.map((session, i) => (
                         <tr>
                           <td>{session.session}:</td>
                           <td>{session.level}:</td>
-                          <td style={{ color: "red", fontWeight:"bold" }}>
-                            {session.gpa}
+                          <td style={{ color: "red", fontWeight: "bold" }}>
+                            {Number(session.gpa).toFixed(2)}
                           </td>
                         </tr>
                       ))}
