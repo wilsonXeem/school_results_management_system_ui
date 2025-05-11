@@ -15,9 +15,7 @@ function OtherCourse() {
 
   useEffect(() => {
     setLoad(true);
-    fetch(
-      `http://127.0.0.1:1234/api/class/${session}/${semester}/${code}`
-    )
+    fetch(`http://127.0.0.1:1234/api/class/${session}/${semester}/${code}`)
       .then((res) => res.json())
       .then((json) => {
         setStudents(json);
@@ -34,26 +32,23 @@ function OtherCourse() {
 
   const handle_result_upload = () => {
     setLoad(true);
-    data.map((student) =>
-      fetch("http://127.0.0.1:1234/api/class/course/score", {
-        method: "POST",
-        body: JSON.stringify({
-          reg_no: student.reg_no,
-          session,
-          semester,
-          course_code: code,
-          ca: student.ca,
-          exam: student.exam,
-        }),
-        headers: { "Content-Type": "application/json" },
+    fetch("http://127.0.0.1:1234/api/class/score", {
+      method: "POST",
+      body: JSON.stringify({
+        students: data,
+        session,
+        semester,
+        course_code: code,
+      }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        window.location.reload();
+        setLoad(false);
       })
-        .then((res) => res.json())
-        .then((json) => {
-          setStudents(json.students);
-          setLoad(false);
-        })
-        .catch((err) => console.log(err))
-    );
+      .catch((err) => console.log(err));
+
     setAlert(true, "scores added successfully!", "success");
   };
   return (
