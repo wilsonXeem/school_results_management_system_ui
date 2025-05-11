@@ -105,7 +105,7 @@ function OtherExternals() {
       <div class="other_externals">
         <h4>Other Non-Professional Courses</h4>
         {externals.length > 0 && (
-          <div>
+          <div className="exs">
             {externals.map((external, i) => (
               <button
                 key={i}
