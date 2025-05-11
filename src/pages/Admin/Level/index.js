@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import levels from "../../../data/levels";
+import external_courses from "../../../data/external_courses";
+import external_units from "../../../data/external_units";
 import units from "../../../data/units";
 // import "./level.css";
 import Table from "./components/Table";
@@ -19,6 +21,8 @@ function Level() {
   const { setAlert } = useContext(ValueContext);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [students, setStudents] = useState([]);
+  const external_codes = Object.keys(external_courses);
+  const external_titles = Object.values(external_courses);
 
   const [reg_no, setReg_no] = useState("");
   const [code, setCode] = useState("");
@@ -83,11 +87,11 @@ function Level() {
     fetch("http://127.0.0.1:1234/api/class/external", {
       method: "POST",
       body: JSON.stringify({
-        reg_no,
+        students: data,
         level,
-        course_title: title,
-        course_code: code,
-        unit_load,
+        course_title: external_courses[selectedCourse],
+        course_code: selectedCourse,
+        unit_load: external_units[selectedCourse],
         semester,
         session,
         class_id,
@@ -101,6 +105,7 @@ function Level() {
       .then((json) => {
         setStudents(json.students);
         setLoad(false);
+        window.location.reload();
       })
       .catch((err) => console.log(err));
   };
@@ -144,30 +149,19 @@ function Level() {
       {show && (
         <div class="external_course_reg_upload">
           <p>Register external course:</p>
-          <input
-            type="text"
-            placeholder="Reg. No"
-            value={reg_no}
-            onChange={(e) => setReg_no(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Course code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Course title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Unit load"
-            value={unit_load}
-            onChange={(e) => setUnit_load(e.target.value)}
-          />
+          <select
+            name="course"
+            onChange={(e) => setSelectedCourse(e.target.value)}
+          >
+            <option>Select course</option>
+            {external_codes.map((course, key) => (
+              <option value={course}>
+                <span>{course}</span> {external_titles[key]}{" "}
+                {external_units[course]}
+              </option>
+            ))}
+          </select>
+          <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
           <button
             onClick={() => {
               handle_external_course();
