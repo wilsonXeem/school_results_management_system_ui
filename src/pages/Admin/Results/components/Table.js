@@ -13,9 +13,7 @@ function Table({ students }) {
   const course_codes = Object.keys(current_semester);
 
   const complete_students = students.filter((student) => {
-    if (student.courses.length >= course_codes.length - 2) {
-      return student;
-    }
+    return student;
   });
 
   const incomplete_students = students.filter((student) => {
@@ -118,67 +116,6 @@ function Table({ students }) {
                   </td>
                 </>
               )}
-            </tr>
-          ))}
-          {incomplete_students.map((student, i) => (
-            <tr key={student._id}>
-              <td className="center">{i + 1}</td>
-              <td
-                onClick={() => navigate(`/admin/student/${student.student_id}`)}
-                style={{ textAlign: "left" }}
-              >
-                {student.fullname}
-              </td>
-              <td
-                onClick={() => navigate(`/admin/student/${student.student_id}`)}
-              >
-                {student.reg_no}
-              </td>
-              {course_codes.map((code) => {
-                const course = student.courses.find(
-                  (c) => c.course_code === code
-                );
-                return (
-                  <td key={code} style={{ textAlign: "center" }}>
-                    {course ? (
-                      <div
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <span style={{ width: "50%" }}>
-                          {Number(course.total).toFixed(0)}
-                        </span>
-                        <span style={{ fontWeight: "bold", width: "50%" }}>
-                          {["F", "E", "D", "C", "B", "A"][course.grade]}
-                        </span>
-                      </div>
-                    ) : null}
-                  </td>
-                );
-              })}
-              {/* <td
-                className="center"
-                style={{
-                  fontWeight: "bold",
-                }}
-              >
-                {student?.gpa.toFixed(2)}
-              </td> */}
-              {/* {semester === "2" && (
-                <>
-                  <td
-                    className="center"
-                    style={{
-                      fontWeight: "bold",
-                      color: student?.session_gpa < 2.5 ? "red" : "black",
-                    }}
-                  >
-                    {student?.session_gpa?.toFixed(2)}
-                  </td>
-                  <td className="center" style={{ fontWeight: "bold" }}>
-                    {student.cgpa?.toFixed(2)}
-                  </td>
-                </>
-              )} */}
             </tr>
           ))}
         </tbody>

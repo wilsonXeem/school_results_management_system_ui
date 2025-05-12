@@ -35,7 +35,11 @@ function Table({ students }) {
             students.map(
               (student, i) =>
                 student && (
-                  <tr>
+                  <tr
+                    onClick={() =>
+                      navigate(`/admin/student/${student.student_id}`)
+                    }
+                  >
                     <td className="center">{i + 1}</td>
                     <td>{student.fullname}</td>
                     <td>{student.reg_no}</td>
