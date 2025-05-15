@@ -41,4 +41,6 @@ module.exports = {
   psb301: "external36",
   psb422: "external37",
   psb464: "external38",
+  psb103: "external39",
+  psb365: "external40",
 };

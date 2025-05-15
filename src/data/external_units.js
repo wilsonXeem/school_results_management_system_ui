@@ -37,8 +37,10 @@ module.exports = {
   ans371: 2,
   psb102: 2,
   psb394: 6,
-  psb393: 3,
+  psb396: 3,
   psb301: 1,
   psb422: 2,
   psb464: 2,
+  psb103: 2,
+  psb365: 2,
 };
