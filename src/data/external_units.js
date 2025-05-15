@@ -34,4 +34,11 @@ module.exports = {
   psb415: 2,
   psb462: 2,
   psb465: 2,
+  ans371: 2,
+  psb102: 2,
+  psb394: 6,
+  psb393: 3,
+  psb301: 1,
+  psb422: 2,
+  psb464: 2,
 };

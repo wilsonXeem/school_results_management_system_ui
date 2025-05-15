@@ -34,4 +34,11 @@ module.exports = {
   psb415: "external29",
   psb462: "external30",
   psb465: "external31",
+  ans371: "external32",
+  psb102: "external33",
+  psb394: "external34",
+  psb396: "external35",
+  psb301: "external36",
+  psb422: "external37",
+  psb464: "external38",
 };
