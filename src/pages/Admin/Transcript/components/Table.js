@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 function Table({
   level,
@@ -8,29 +8,31 @@ function Table({
   second_external,
   show,
 }) {
-  let total_units = 0,
-    total_gp = 0;
-
-  if (first_semester?.length > 0)
-    first_semester.forEach((course) => {
-      total_units += course.unit_load;
-      total_gp += course.unit_load * course.grade;
-    });
-  if (second_semester?.length > 0)
-    second_semester.forEach((course) => {
-      total_units += course.unit_load;
-      total_gp += course.unit_load * course.grade;
-    });
-  if (first_external?.length > 0)
-    first_external.forEach((course) => {
-      total_units += course.unit_load;
-      total_gp += course.unit_load * course.grade;
-    });
-  if (second_external?.length > 0)
-    second_external.forEach((course) => {
-      total_units += course.unit_load;
-      total_gp += course.unit_load * course.grade;
-    });
+  const { total_units, total_gp, gradeLabels } = useMemo(() => {
+    let total_units = 0, total_gp = 0;
+    const gradeLabels = ["F", "E", "D", "C", "B", "A"];
+    
+    const calculateTotals = (courses) => {
+      if (courses?.length > 0) {
+        courses.forEach((course) => {
+          total_units += course.unit_load;
+          total_gp += course.unit_load * course.grade;
+        });
+      }
+    };
+    
+    calculateTotals(first_semester);
+    calculateTotals(second_semester);
+    calculateTotals(first_external);
+    calculateTotals(second_external);
+    
+    return { total_units, total_gp, gradeLabels };
+  }, [first_semester, second_semester, first_external, second_external]);
+  
+  const renderGrade = useMemo(() => (grade) => {
+    const label = gradeLabels[grade];
+    return grade === 0 ? <b style={{ color: "red" }}>{label}</b> : <b>{label}</b>;
+  }, [gradeLabels]);
 
   return (
     <div class="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
@@ -64,14 +66,7 @@ function Table({
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{Number(course.total).toFixed(0)}</td>
-              <td>
-                {course.grade === 5 && <b>A</b>}
-                {course.grade === 4 && <b>B</b>}
-                {course.grade === 3 && <b>C</b>}
-                {course.grade === 2 && <b>D</b>}
-                {course.grade === 1 && <b>E</b>}
-                {course.grade === 0 && <b style={{ color: "red" }}>F</b>}
-              </td>
+              <td>{renderGrade(course.grade)}</td>
               <td>{course.unit_load * course.grade}</td>
             </tr>
           ))}
@@ -95,14 +90,7 @@ function Table({
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed(0)}</td>
-                <td>
-                  {course.grade === 5 && <b>A</b>}
-                  {course.grade === 4 && <b>B</b>}
-                  {course.grade === 3 && <b>C</b>}
-                  {course.grade === 2 && <b>D</b>}
-                  {course.grade === 1 && <b>E</b>}
-                  {course.grade === 0 && <b style={{ color: "red" }}>F</b>}
-                </td>
+                <td>{renderGrade(course.grade)}</td>
                 <td>{course.unit_load * course.grade}</td>
               </tr>
             ))}
@@ -145,14 +133,7 @@ function Table({
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed()}</td>
-                <td>
-                  {course.grade === 5 && <b>A</b>}
-                  {course.grade === 4 && <b>B</b>}
-                  {course.grade === 3 && <b>C</b>}
-                  {course.grade === 2 && <b>D</b>}
-                  {course.grade === 1 && <b>E</b>}
-                  {course.grade === 0 && <b style={{ color: "red" }}>F</b>}
-                </td>
+                <td>{renderGrade(course.grade)}</td>
                 <td>{course.unit_load * course.grade}</td>
               </tr>
             ))}
@@ -175,14 +156,7 @@ function Table({
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed()}</td>
-                <td>
-                  {course.grade === 5 && <b>A</b>}
-                  {course.grade === 4 && <b>B</b>}
-                  {course.grade === 3 && <b>C</b>}
-                  {course.grade === 2 && <b>D</b>}
-                  {course.grade === 1 && <b>E</b>}
-                  {course.grade === 0 && <b style={{ color: "red" }}>F</b>}
-                </td>
+                <td>{renderGrade(course.grade)}</td>
                 <td>{course.unit_load * course.grade}</td>
               </tr>
             ))}
@@ -209,15 +183,15 @@ function Table({
         }}
       >
         <div
-          class="total_grade"
+          className="total_grade"
           style={{ display: "flex", alignItems: "center", marginRight: "1rem" }}
         >
           <p style={{ marginRight: "0.3rem" }}>cummulative grade point:</p>
-          <h3>{Number(total_gp / total_units).toFixed(2)}</h3>
+          <h3>{total_units > 0 ? Number(total_gp / total_units).toFixed(2) : "0.00"}</h3>
         </div>
       </div>
     </div>
   );
 }
 
-export default Table;
+export default React.memo(Table);

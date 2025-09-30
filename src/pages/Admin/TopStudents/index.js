@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Loader from "../../../components/Loader";
 
 function TopStudents() {
   const [sessions, setSessions] = useState([]);
@@ -6,15 +7,21 @@ function TopStudents() {
   const [classes, setClasses] = useState([]);
   const [current_class, setCurrent_class] = useState("");
   const [students, setStudents] = useState([]);
+  const [load, setLoad] = useState(false);
   const printRef = useRef(null);
 
   useEffect(() => {
+    setLoad(true);
     fetch("http://127.0.0.1:1234/api/sessions/")
       .then((res) => res.json())
       .then((json) => {
         setSessions(json.sessions);
+        setLoad(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setLoad(false);
+      });
   }, []);
 
   const handlePrint = () => {
@@ -66,9 +73,17 @@ function TopStudents() {
             key={index}
             onClick={() => {
               setCurrent_class(level.level);
+              setLoad(true);
               fetch(`http://127.0.0.1:1234/api/class/topstudents/${level._id}`)
                 .then((res) => res.json())
-                .then((json) => setStudents(json.topStudents));
+                .then((json) => {
+                  setStudents(json.topStudents);
+                  setLoad(false);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  setLoad(false);
+                });
             }}
             style={{ cursor: "pointer" }}
           >
@@ -107,6 +122,8 @@ function TopStudents() {
         </div>
       </div>
 
+      {load && <Loader />}
+      
       {students.length > 0 && (
         <button className="print-btn" onClick={handlePrint}>
           Print Top Students

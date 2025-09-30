@@ -5,6 +5,7 @@ import Table from "./components/Table";
 import { ValueContext } from "../../../Context";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Header from "../../../components/Header";
+import Loader from "../../../components/Loader";
 
 const sessions = [
   { session: "2023-2024", prev: "2022-2023" },
@@ -19,9 +20,11 @@ function ErrorStudents() {
   const { level, semester, session, _id } = useParams();
   const [students, setStudents] = useState([]);
   const [prev_students, setPrev_students] = useState([]);
+  const [load, setLoad] = useState(false);
   const prev_session = sessions.find((sess) => sess.session === session).prev;
 
   useEffect(() => {
+    setLoad(true);
     fetch(`http://127.0.0.1:1234/api/class/error`, {
       method: "POST",
       headers: {
@@ -33,8 +36,14 @@ function ErrorStudents() {
       }),
     })
       .then((res) => res.json())
-      .then((json) => setStudents(json.students))
-      .catch((error) => console.log(error));
+      .then((json) => {
+        setStudents(json.students);
+        setLoad(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoad(false);
+      });
   }, []);
 
   return (
@@ -51,6 +60,7 @@ function ErrorStudents() {
             {session}: {level} error students list
           </h2>
         </div>
+        {load && <Loader />}
         {students.length > 0 && <Table students={students} />}
       </div>
       <div class="gp_tab no_print">

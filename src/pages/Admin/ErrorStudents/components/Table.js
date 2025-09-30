@@ -1,19 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 function Table({ students }) {
-  students.sort(function (a, b) {
-    if (a.fullname < b.fullname) {
-      return -1;
-    }
-    if (a.fullname > b.fullname) {
-      return 1;
-    }
-    return 0;
-  });
-  console.log(students);
+  const sortedStudents = useMemo(() => {
+    if (!students?.length) return [];
+    return [...students].sort((a, b) => a.fullname.localeCompare(b.fullname));
+  }, [students]);
 
   return (
-    <div class="table" id="myTable">
+    <div className="table" id="myTable">
       <table>
         <thead>
           <tr>
@@ -26,26 +20,28 @@ function Table({ students }) {
           </tr>
         </thead>
         <tbody>
-          {students.length > 0 &&
-            students.map(
+          {sortedStudents.length > 0 &&
+            sortedStudents.map(
               (student, i) =>
                 student && (
-                  <tr>
+                  <tr key={student.student_id || i}>
                     <td className="center">{i + 1}</td>
                     <td>{student.fullname}</td>
                     <td>{student.reg_no}</td>
                     <td>{student.moe}</td>
                     <td className="center">{student.current_level}</td>
-                    {student.probation_sessions.length > 0 &&
-                      student.probation_sessions.map((session, i) => (
-                        <tr>
-                          <td>{session.session}:</td>
-                          <td>{session.level}:</td>
-                          <td style={{ color: "red", fontWeight: "bold" }}>
-                            {Number(session.gpa).toFixed(2)}
-                          </td>
-                        </tr>
-                      ))}
+                    <td>
+                      {student.probation_sessions?.length > 0 &&
+                        student.probation_sessions.map((session, j) => (
+                          <div key={j} style={{ marginBottom: "0.2rem" }}>
+                            <span>{session.session}: </span>
+                            <span>{session.level}: </span>
+                            <span style={{ color: "red", fontWeight: "bold" }}>
+                              {Number(session.gpa).toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                    </td>
                   </tr>
                 )
             )}
@@ -55,4 +51,4 @@ function Table({ students }) {
   );
 }
 
-export default Table;
+export default React.memo(Table);

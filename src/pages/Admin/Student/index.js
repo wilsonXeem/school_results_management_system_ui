@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import "./adminstudentdashboard.css";
 import unn from "../../../data/unn.png";
 import Table from "./ocmponents/Table";
 import { useParams, useNavigate } from "react-router-dom";
 import generatePDF from "react-to-pdf";
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
 
 function AdminStudentDashboard() {
   const target = useRef();
@@ -11,39 +13,119 @@ function AdminStudentDashboard() {
   const { _id } = useParams();
   const [semester, setSemester] = useState({});
   const [total_semesters, setTotal_semesters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1; // Months start at 0!
-  let dd = today.getDate();
+  const formattedToday = useMemo(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1;
+    let dd = today.getDate();
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
 
-  const formattedToday = dd + "/" + mm + "/" + yyyy;
+    return dd + "/" + mm + "/" + yyyy;
+  }, []);
+
+  const fetchStudentData = useCallback(async () => {
+    if (!_id) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/student/results/semester/${_id}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const json = await response.json();
+      const semesters = Array.isArray(json) ? json : [];
+      
+      setTotal_semesters(semesters);
+      setSemester(semesters[semesters.length - 1] || {});
+    } catch (err) {
+      console.error('Failed to fetch student data:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [_id]);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:1234/api/student/results/semester/${_id}`)
-      .then((res) => res.json())
-      .then((json) => {
-        setTotal_semesters(json);
-        setSemester(json[json.length - 1]);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    fetchStudentData();
+  }, [fetchStudentData]);
+
+  const handleSemesterChange = useCallback((e) => {
+    const index = parseInt(e.target.value);
+    if (total_semesters[index]) {
+      setSemester(total_semesters[index]);
+    }
+  }, [total_semesters]);
+
+  const handleGeneratePDF = useCallback(() => {
+    if (!semester?.student_id?.fullname) return;
+    
+    generatePDF(target, {
+      filename: `${semester.student_id.fullname} result statement.pdf`,
+    });
+  }, [semester]);
+
+  const handleNavigateToTranscript = useCallback(() => {
+    if (!semester?.session || !semester?.level || !semester?.student_id?._id) return;
+    
+    navigate(
+      `/admin/student/transcript/${semester.session}/${semester.level}/${semester.student_id._id}`
+    );
+  }, [navigate, semester]);
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <h2>Loading student data...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <div className="error-message" style={{ color: "red" }}>
+          <h3>Error loading student data</h3>
+          <p>{error}</p>
+          <button onClick={fetchStudentData} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!semester?.student_id) {
+    return (
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <h3>No student data found</h3>
+        <button onClick={() => navigate('/admin')} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+          Back to Admin
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
-      <div class="student_dashboard" ref={target}>
+      <div className="student_dashboard" ref={target}>
         <div className="d_head">
-          <div class="student_dashboard_head">
-            <div class="passport">
-              <div class="passport_img">
-                <img src={unn} alt="" />
+          <div className="student_dashboard_head">
+            <div className="passport">
+              <div className="passport_img">
+                <img src={unn} alt="University Logo" />
               </div>
             </div>
-            <div class="dashboard_header">
-              <div class="student_dashboard_head_title">
+            <div className="dashboard_header">
+              <div className="student_dashboard_head_title">
                 <p>Faculty of Pharmaceutical Sciences</p>
                 <p>University of Nigeria Nsukka</p>
                 <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
@@ -52,58 +134,63 @@ function AdminStudentDashboard() {
                 </i>
               </div>
             </div>
-            <div class="passport">
-              <div class="passport_img">
-                <img src={semester?.student_id?.profile_image} alt="" />
+            <div className="passport">
+              <div className="passport_img">
+                <img 
+                  src={semester?.student_id?.profile_image || unn} 
+                  alt="Student" 
+                  onError={(e) => { e.target.src = unn; }}
+                />
               </div>
             </div>
           </div>
         </div>
-        <div class="student_dashboard_body">
-          <div class="student_dashboard_body_details">
+        <div className="student_dashboard_body">
+          <div className="student_dashboard_body_details">
             <p>
-              Name: <b>{semester?.student_id?.fullname}</b>
+              Name: <b>{semester?.student_id?.fullname || 'N/A'}</b>
             </p>
             <p>
-              Reg. No: <b>{semester?.student_id?.reg_no}</b>
+              Reg. No: <b>{semester?.student_id?.reg_no || 'N/A'}</b>
             </p>
             <p>
               Session:{" "}
               <b>
                 <select
-                  onChange={(e) => {
-                    if (total_semesters[e.target.value])
-                      setSemester(total_semesters[e.target.value]);
-                  }}
+                  value={total_semesters.findIndex(s => s === semester)}
+                  onChange={handleSemesterChange}
                 >
-                  <option>{semester?.session}</option>
-                  {total_semesters.map((semester, i) => (
-                    <option value={i}>
-                      {semester?.session}- {semester?.semester}
+                  {total_semesters.map((sem, i) => (
+                    <option key={i} value={i}>
+                      {sem?.session} - Semester {sem?.semester}
                     </option>
                   ))}
                 </select>
               </b>
             </p>
             <p>
-              Level: <b>{semester?.level}</b>
+              Level: <b>{semester?.level || 'N/A'}</b>
             </p>
             <p>
-              Semester: <b>{semester?.semester === 1 ? "First" : "Second"}</b>
+              Semester: <b>{semester?.semester === 1 ? "First" : semester?.semester === 2 ? "Second" : 'N/A'}</b>
             </p>
             <p>
-              mode of entry: <b>{semester?.student_id?.moe}</b>
+              Mode of entry: <b>{semester?.student_id?.moe || 'N/A'}</b>
             </p>
           </div>
-          {semester?.courses?.length > 0 && (
-            <Table courses={semester?.courses} />
+          {semester?.courses?.length > 0 ? (
+            <Table courses={semester.courses} />
+          ) : (
+            <div style={{ textAlign: "center", padding: "2rem" }}>
+              <p>No courses found for this semester.</p>
+            </div>
           )}
 
-          <div class="gp_tab">
-            <div class="transcript_btn"></div>
+          <div className="gp_tab">
+            <div className="transcript_btn"></div>
           </div>
-          <div class="signature">
-            <div class="exam_office">
+          <div className="signature">
+            <div className="exam_office">
               <p
                 style={{
                   textTransform: "capitalize",
@@ -116,7 +203,7 @@ function AdminStudentDashboard() {
                 Name and Signature of Examination Officer (with date)
               </p>
             </div>
-            <div class="dean">
+            <div className="dean">
               <p
                 style={{
                   textTransform: "capitalize",
@@ -204,28 +291,22 @@ function AdminStudentDashboard() {
           </table>
         </div>
       </div>
-      <div class="transcript_button">
+      <div className="transcript_button">
         <button
-          onClick={() =>
-            generatePDF(target, {
-              filename: `${semester?.student_id?.fullname} result statement.pdf`,
-            })
-          }
+          onClick={handleGeneratePDF}
+          disabled={!semester?.student_id?.fullname}
         >
-          Print statement
+          Print Statement
         </button>
         <button
-          onClick={() =>
-            navigate(
-              `/admin/student/transcript/${semester?.session}/${semester?.level}/${semester?.student_id?._id}`
-            )
-          }
+          onClick={handleNavigateToTranscript}
+          disabled={!semester?.session || !semester?.level || !semester?.student_id?._id}
         >
-          Generate transcript
+          Generate Transcript
         </button>
       </div>
     </>
   );
 }
 
-export default AdminStudentDashboard;
+export default React.memo(AdminStudentDashboard);

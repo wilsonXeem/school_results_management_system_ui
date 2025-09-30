@@ -1,32 +1,37 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Levels({ classes, session }) {
   const navigate = useNavigate();
+  
+  const handleNavigation = useCallback((session, level, levelId, semester) => {
+    navigate(`/admin/course-reg/${session}/${level}/${levelId}/${semester}`);
+  }, [navigate]);
+  
+  if (!classes?.length) {
+    return (
+      <div className="levels">
+        <p>No classes available for this session.</p>
+      </div>
+    );
+  }
+  
   return (
     <div className="levels">
       <p>Classes:</p>
-      {classes.map((level, i) => (
-        <div class="level" key={i}>
+      {classes.map((level) => (
+        <div className="level" key={level._id || level.level}>
           <h3>{level.level} Level</h3>
           <div>
             <button
               className="blue"
-              onClick={() =>
-                navigate(
-                  `/admin/course-reg/${session}/${level.level}/${level._id}/1`
-                )
-              }
+              onClick={() => handleNavigation(session, level.level, level._id, 1)}
             >
               First semester
             </button>
             <button
               className="gray"
-              onClick={() =>
-                navigate(
-                  `/admin/course-reg/${session}/${level.level}/${level._id}/2`
-                )
-              }
+              onClick={() => handleNavigation(session, level.level, level._id, 2)}
             >
               Second semester
             </button>
@@ -37,4 +42,4 @@ function Levels({ classes, session }) {
   );
 }
 
-export default Levels;
+export default React.memo(Levels);

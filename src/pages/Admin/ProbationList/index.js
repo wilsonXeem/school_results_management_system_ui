@@ -5,14 +5,17 @@ import Table from "./components/Table";
 import { ValueContext } from "../../../Context";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Header from "../../../components/Header";
+import Loader from "../../../components/Loader";
 
 function ProbationList() {
   const target = useRef();
   const { level, semester, session, _id } = useParams();
   const [students, setStudents] = useState([]);
+  const [load, setLoad] = useState(false);
   const { socket } = useContext(ValueContext);
 
   useEffect(() => {
+    setLoad(true);
     fetch("http://127.0.0.1:1234/api/class/probation", {
       method: "POST",
       headers: {
@@ -25,8 +28,14 @@ function ProbationList() {
       }),
     })
       .then((res) => res.json())
-      .then((json) => setStudents(json.students))
-      .catch((err) => console.log(err));
+      .then((json) => {
+        setStudents(json.students);
+        setLoad(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoad(false);
+      });
   }, []);
 
   return (
@@ -43,6 +52,7 @@ function ProbationList() {
             {session}: {level} Level probation list
           </h2>
         </div>
+        {load && <Loader />}
         {students.length > 0 && <Table students={students} />}
       </div>
       <div class="gp_tab no_print">

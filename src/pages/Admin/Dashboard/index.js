@@ -37,7 +37,7 @@ function AdminDashboard() {
           <h2>{total_sessions}</h2>
         </div>
         <button onClick={() => navigate("/admin/student/management")}>
-          Search student
+          Student Management
         </button>
         <button
           onClick={() => navigate("/admin/topstudents")}
