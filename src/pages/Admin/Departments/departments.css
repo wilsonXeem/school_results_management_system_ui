@@ -1,64 +1,137 @@
 .current_session {
   display: flex;
-  align-items: baseline;
-  padding: 1rem 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin: 1rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.current_session p {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #64748b;
 }
 
 .current_session h2 {
-  margin: 0rem 0.5rem;
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.2rem;
+}
+
+.current_session div {
+  margin-left: auto;
+}
+
+.current_session button {
+  border: none;
+  background-color: #1d4ed8;
+  color: white;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.current_session button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .previous_sessions_container {
-  padding: 1rem 2rem;
+  padding: 0.5rem 1.5rem 1.5rem;
 }
 
 .previous_sessions_container p {
-  margin-bottom: 0rem;
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #64748b;
 }
 
 .previous_sessions {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
   width: 100%;
+}
+
+.previous_sessions > div {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
 }
 
 .previous_sessions h3 {
   display: flex;
   align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: #0f172a;
+  font-size: 0.95rem;
 }
 
 .levels {
-  padding: 0rem 0rem 0rem 4rem;
+  padding: 0.5rem 1.5rem 1.5rem;
+}
+
+.levels > p {
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #64748b;
 }
 
 .level {
-  padding: 0rem 0rem 0rem 2rem;
-  display: grid;
-  grid-template-columns: 30% 1fr;
-  margin: 1rem;
-  width: 35rem;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.75rem 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.level h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
 }
 
 .level div {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
 }
 
 .level button {
   border: none;
-  padding: 1rem;
-  margin: 0.5rem;
-  font-size: medium;
-  font-weight: bold;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
 }
 
 .blue {
-  background-color: #bbdefb;
+  background-color: #dbeafe;
+  color: #1e3a8a;
 }
 
 .gray {
-  background-color: #e0e0e0;
+  background-color: #e2e8f0;
+  color: #1f2937;
 }
 
 .course{
@@ -95,28 +168,44 @@
 .departmental_courses div div{
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
 .departmental_courses div button {
   border: none;
-  border-radius: 2px;
-  padding: 0.5rem 1rem;
-  margin: 0.1rem 1rem;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-}
-
-.departmental_courses div button:hover{
-  scale: 1.03;
+  gap: 0.35rem;
 }
 
 .departmental_courses div .first{
-  background-color: #bbdefb;
+  background-color: #dbeafe;
+  color: #1e3a8a;
 }
 
 .departmental_courses div .second{
-  background-color: #e0e0e0;
+  background-color: #e2e8f0;
+  color: #1f2937;
+}
+
+@media (max-width: 820px) {
+  .current_session {
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .departmental_courses {
+    grid-template-columns: 1fr;
+  }
+
+  .departmental_courses div {
+    padding: 1rem;
+  }
 }
