@@ -30,6 +30,8 @@ import TopStudents from "./pages/Admin/TopStudents";
 import Professionals from "./pages/Admin/Professionals";
 import ProfessionalsSessions from "./pages/Admin/ProfessionalsSessions";
 import OtherProfessionalsSessions from "./pages/Admin/ProfessionalsSessions/OtherProfessionalsSessions";
+import Finalists from "./pages/Admin/Finalists";
+import AdminLayout from "./components/AdminLayout";
 
 import Student from "./pages/Student";
 import PasswordReset from "./pages/Student/PasswordReset";
@@ -42,39 +44,42 @@ import TableExtractor from "./pages/TableExtractor";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
+  const withAdminLayout = (element) => <AdminLayout>{element}</AdminLayout>;
+
   return (
     <div className="App">
       <Router>
         <Routes>
           <Route path="/admin" exact element={<Admin />} />
           <Route path="/" exact element={<AdminDashboard />} />
-          <Route path="/admin/course-reg/sessions" exact element={<Sessions />} />
-          <Route path="/admin/course-reg/sessions/:sesion" exact element={<OtherSessions />} />
-          <Route path="/admin/course-reg/:session/:level/:class_id/:semester" exact element={<Level />} />
-          <Route path="/admin/results/sessions" exact element={<ResultSessions />} />
-          <Route path="/admin/results/sessions/:sesion" exact element={<OtherResultSessions />} />
-          <Route path="/admin/results/:session/:class_id/:level/:semester" exact element={<Result />} />
-          <Route path="/admin/professionals/sessions" exact element={<ProfessionalsSessions />} />
-          <Route path="/admin/professionals/sessions/:sesion" exact element={<OtherProfessionalsSessions />} />
-          <Route path="/admin/professionals/:session/:class_id/:level/:semester" exact element={<Professionals />} />
-          <Route path="/admin/faculty/courses" exact element={<Departments />} />
-          <Route path="/admin/faculty/courses/:sesion" exact element={<OtherDepartments />} />
-          <Route path="/admin/faculty/:session/courses/:code" exact element={<Department />} />
-          <Route path="/admin/faculty/:session/:level/:semester/:code" exact element={<Course />} />
-          <Route path="/admin/faculty/:session/:semester/:code/:title/:unit" exact element={<OtherCourse />} />
-          <Route path="/admin/faculty/external" exact element={<External />} />
-          <Route path="/admin/faculty/external/:sesion" exact element={<OtherExternals />} />
-          <Route path="/admin/student/:_id" exact element={<AdminStudentDashboard />} />
-          <Route path="/admin/student/transcript/:sesion/:level/:_id" exact element={<AdminTranscript/>}/>
-          <Route path="/admin/faculty/probation/sessions" exact element={<ProbationSessions/>}/>
-          <Route path="/admin/faculty/probation/sessions/:sesion" exact element={<OtherProbationSessions/>}/>
-          <Route path="/admin/faculty/probation/list/:session/:_id/:level/:semester" exact element={<ProbationList />} />
-          <Route path="/admin/faculty/error/students/sessions" exact element={<ErrorStudentsSessions/>}/>
-          <Route path="/admin/faculty/error/students/sessions/:sesion" exact element={<OtherErrorStudentsSession/>}/>
-          <Route path="/admin/faculty/error/students/list/:session/:_id/:level/:semester" exact element={<ErrorStudents />} />
-          <Route path="/admin/student/management" exact element={<StudentManagement />} />
-          <Route path="/admin/moe" exact element={<ExtractMoe />} />
-          <Route path="/admin/topstudents" exact element={<TopStudents />} />
+          <Route path="/admin/course-reg/sessions" exact element={withAdminLayout(<Sessions />)} />
+          <Route path="/admin/course-reg/sessions/:sesion" exact element={withAdminLayout(<OtherSessions />)} />
+          <Route path="/admin/course-reg/:session/:level/:class_id/:semester" exact element={withAdminLayout(<Level />)} />
+          <Route path="/admin/results/sessions" exact element={withAdminLayout(<ResultSessions />)} />
+          <Route path="/admin/results/sessions/:sesion" exact element={withAdminLayout(<OtherResultSessions />)} />
+          <Route path="/admin/results/:session/:class_id/:level/:semester" exact element={withAdminLayout(<Result />)} />
+          <Route path="/admin/professionals/sessions" exact element={withAdminLayout(<ProfessionalsSessions />)} />
+          <Route path="/admin/professionals/sessions/:sesion" exact element={withAdminLayout(<OtherProfessionalsSessions />)} />
+          <Route path="/admin/professionals/:session/:class_id/:level/:semester" exact element={withAdminLayout(<Professionals />)} />
+          <Route path="/admin/faculty/courses" exact element={withAdminLayout(<Departments />)} />
+          <Route path="/admin/faculty/courses/:sesion" exact element={withAdminLayout(<OtherDepartments />)} />
+          <Route path="/admin/faculty/:session/courses/:code" exact element={withAdminLayout(<Department />)} />
+          <Route path="/admin/faculty/:session/:level/:semester/:code" exact element={withAdminLayout(<Course />)} />
+          <Route path="/admin/faculty/:session/:semester/:code/:title/:unit" exact element={withAdminLayout(<OtherCourse />)} />
+          <Route path="/admin/faculty/external" exact element={withAdminLayout(<External />)} />
+          <Route path="/admin/faculty/external/:sesion" exact element={withAdminLayout(<OtherExternals />)} />
+          <Route path="/admin/student/:_id" exact element={withAdminLayout(<AdminStudentDashboard />)} />
+          <Route path="/admin/student/transcript/:sesion/:level/:_id" exact element={withAdminLayout(<AdminTranscript/>)} />
+          <Route path="/admin/faculty/probation/sessions" exact element={withAdminLayout(<ProbationSessions/>)} />
+          <Route path="/admin/faculty/probation/sessions/:sesion" exact element={withAdminLayout(<OtherProbationSessions/>)} />
+          <Route path="/admin/faculty/probation/list/:session/:_id/:level/:semester" exact element={withAdminLayout(<ProbationList />)} />
+          <Route path="/admin/faculty/error/students/sessions" exact element={withAdminLayout(<ErrorStudentsSessions/>)} />
+          <Route path="/admin/faculty/error/students/sessions/:sesion" exact element={withAdminLayout(<OtherErrorStudentsSession/>)} />
+          <Route path="/admin/faculty/error/students/list/:session/:_id/:level/:semester" exact element={withAdminLayout(<ErrorStudents />)} />
+          <Route path="/admin/student/management" exact element={withAdminLayout(<StudentManagement />)} />
+          <Route path="/admin/moe" exact element={withAdminLayout(<ExtractMoe />)} />
+          <Route path="/admin/topstudents" exact element={withAdminLayout(<TopStudents />)} />
+          <Route path="/admin/finalists" exact element={withAdminLayout(<Finalists />)} />
           
           {/* <Route path="/" exact element={<TableExtractor/>}/> */}
           <Route path="/student" exact element={<Student/>}/>

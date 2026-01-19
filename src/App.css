@@ -50,3 +50,21 @@ button:hover {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+@media print {
+  body,
+  .App,
+  .admin_layout,
+  .admin_layout_content {
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
