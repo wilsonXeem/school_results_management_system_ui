@@ -1,0 +1,134 @@
+.admin_layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f7f9fc;
+}
+
+.admin_sidenav {
+  width: 72px;
+  background: #0f172a;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-shadow: 4px 0 16px rgba(15, 23, 42, 0.2);
+}
+
+.sidenav_brand {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+
+.sidenav_links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  align-items: center;
+}
+
+.nav_item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav_item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav_item.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.nav_label {
+  position: absolute;
+  left: 78px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.25);
+}
+
+.nav_item:hover .nav_label,
+.nav_item:focus .nav_label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.admin_layout_content {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+@media print {
+  .admin_sidenav {
+    display: none;
+  }
+
+  .admin_layout {
+    display: block;
+  }
+
+  .admin_layout_content {
+    padding: 0;
+  }
+}
+
+@media (max-width: 840px) {
+  .admin_layout {
+    flex-direction: column;
+  }
+
+  .admin_sidenav {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .sidenav_links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav_label {
+    display: none;
+  }
+}
