@@ -142,11 +142,14 @@
 
 .transcript_button button {
   border: none;
-  background-color: #020263;
+  background-color: #007bff;
   color: white;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  font-size: medium;
+  padding: 0.4rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
 }
 
 .totals {

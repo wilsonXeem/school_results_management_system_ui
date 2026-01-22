@@ -19,6 +19,9 @@ function Transcript() {
   const [second_semester, setSecond_semester] = useState([]);
   const [first_external, setFirst_external] = useState([]);
   const [second_external, setSecond_external] = useState([]);
+  const [transcriptType, setTranscriptType] = useState('faculty');
+  const [overallUnits, setOverallUnits] = useState(0);
+  const [overallGp, setOverallGp] = useState(0);
 
   useEffect(() => {
     socket.emit("student", { _id });
@@ -56,6 +59,17 @@ function Transcript() {
           res.student.total_semesters.length - 2
         ].courses.filter((course) => !(course.course_code in professionals))
       );
+
+    let units = 0;
+    let gp = 0;
+    res.student.total_semesters.forEach((semester) => {
+      semester?.courses?.forEach((course) => {
+        units += Number(course.unit_load) || 0;
+        gp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+      });
+    });
+    setOverallUnits(units);
+    setOverallGp(gp);
   });
 
   const today = new Date();
@@ -69,7 +83,52 @@ function Transcript() {
   const formattedToday = dd + "/" + mm + "/" + yyyy;
 
   return (
-    <>
+    <div>
+      <div style={{ 
+        position: 'fixed',
+        top: '10px',
+        right: '10px',
+        zIndex: 9999,
+        backgroundColor: 'white',
+        padding: '15px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+        border: '2px solid #007bff'
+      }}>
+        <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#333' }}>Transcript Type:</div>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <button
+            onClick={() => setTranscriptType('faculty')}
+            style={{
+              padding: '8px 16px',
+              border: 'none',
+              backgroundColor: transcriptType === 'faculty' ? '#007bff' : '#e9ecef',
+              color: transcriptType === 'faculty' ? 'white' : '#333',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              borderRadius: '4px'
+            }}
+          >
+            Faculty
+          </button>
+          <button
+            onClick={() => setTranscriptType('university')}
+            style={{
+              padding: '8px 16px',
+              border: 'none',
+              backgroundColor: transcriptType === 'university' ? '#007bff' : '#e9ecef',
+              color: transcriptType === 'university' ? 'white' : '#333',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              borderRadius: '4px'
+            }}
+          >
+            University
+          </button>
+        </div>
+      </div>
       <div class="student_db" id="transcript" ref={target}>
         <div class="student_dashboard_head">
           <div class="passport">
@@ -82,11 +141,26 @@ function Transcript() {
             <img src={unn} alt="" />
           </div> */}
             <div class="student_dashboard_head_title">
-              <h2>Faculty of Pharmaceutical Sciences</h2>
-              <p style={{ fontWeight: "bold", fontSize: "larger" }}>
-                University of Nigeria Nsukka
-              </p>
-              <h2>Semester Statement of Result</h2>
+              {transcriptType === "university" ? (
+                <>
+                  <h2>University of Nigeria, Nsukka</h2>
+                  <p style={{ fontWeight: "bold", fontSize: "larger" }}>
+                    Office of the Registrar (Examinations Unit)
+                  </p>
+                  <h2>Doctor of Pharmacy Professional Examination Results Sheet</h2>
+                </>
+              ) : (
+                <>
+                  <h2>Faculty of Pharmaceutical Sciences</h2>
+                  <p style={{ fontWeight: "bold", fontSize: "larger" }}>
+                    University of Nigeria Nsukka
+                  </p>
+                  <h2>Semester Statement of Result</h2>
+                </>
+              )}
+              <i style={{ fontSize: "large", fontWeight: "bold" }}>
+                {transcriptType === "faculty" ? "(Faculty Copy)" : ""}
+              </i>
             </div>
           </div>
           <div class="passport">
@@ -120,6 +194,9 @@ function Transcript() {
             second_semester={second_semester}
             first_external={first_external}
             second_external={second_external}
+            transcriptType={transcriptType}
+            overall_units={overallUnits}
+            overall_gp={overallGp}
           />
           {/* <GPtable
             generatePDF={generatePDF}
@@ -182,7 +259,7 @@ function Transcript() {
         </div>
         <div></div>
       </div>
-    </>
+    </div>
   );
 }
 

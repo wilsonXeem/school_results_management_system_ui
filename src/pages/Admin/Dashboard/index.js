@@ -140,9 +140,9 @@ function AdminDashboard() {
           url={"/admin/faculty/error/students/sessions"}
         />
         <Box
-          title={"Finalists"}
+          title={"Outstanding Failed Courses"}
           color={"finalists"}
-          url={"/admin/finalists"}
+          url={"/admin/ofc"}
         />
         <Box
           title={"Professionals"}

@@ -7,6 +7,9 @@ function Table({
   first_external,
   second_external,
   show,
+  transcriptType,
+  overall_units,
+  overall_gp,
 }) {
   const { total_units, total_gp, gradeLabels } = useMemo(() => {
     let total_units = 0, total_gp = 0;
@@ -101,7 +104,11 @@ function Table({
         <div>
           {level !== 100 && (
             <p style={{ paddingLeft: "1rem", fontWeight: "bold" }}>
-              {level == 100 ? "courses" : "non-professional courses"}
+              {level == 100
+                ? "courses"
+                : transcriptType === "university"
+                ? "carry-over courses"
+                : "non-professional courses"}
             </p>
           )}
           <table>
@@ -164,14 +171,29 @@ function Table({
         </div>
       )}
 
-      <div className="totals">
-        <div>
-          <p>total grade points:</p>
-          <h3>{total_gp}</h3>
+      <div
+        className="totals"
+        style={{ flexDirection: "column", alignItems: "flex-end", gap: "0.25rem" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p>total units:</p>
+            <h3>{total_units}</h3>
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p>total grade points:</p>
+            <h3>{total_gp}</h3>
+          </div>
         </div>
-        <div>
-          <p>Total units:</p>
-          <h3>{total_units}</h3>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p>overall units:</p>
+            <h3>{overall_units ?? total_units}</h3>
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p>overall grade points:</p>
+            <h3>{overall_gp ?? total_gp}</h3>
+          </div>
         </div>
       </div>
       <div
@@ -186,8 +208,18 @@ function Table({
           className="total_grade"
           style={{ display: "flex", alignItems: "center", marginRight: "1rem" }}
         >
-          <p style={{ marginRight: "0.3rem" }}>cummulative grade point:</p>
-          <h3>{total_units > 0 ? Number(total_gp / total_units).toFixed(2) : "0.00"}</h3>
+          <p style={{ marginRight: "0.3rem" }}>
+            {Number(level) === 600 ? "cummulative grade point" : "grade point"}:
+          </p>
+          <h3>
+            {Number(level) === 600
+              ? overall_units > 0
+                ? Number(overall_gp / overall_units).toFixed(2)
+                : "0.00"
+              : total_units > 0
+              ? Number(total_gp / total_units).toFixed(2)
+              : "0.00"}
+          </h3>
         </div>
       </div>
     </div>

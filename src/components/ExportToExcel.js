@@ -14,7 +14,23 @@ const ExportToExcel = ({ tableId, filename }) => {
     saveAs(data, `${filename}.xlsx`);
   };
 
-  return <button onClick={exportToExcel}>Download as Excel</button>;
+  return (
+    <button
+      onClick={exportToExcel}
+      style={{
+        padding: "4px 10px",
+        border: "none",
+        backgroundColor: "#1d6f42",
+        color: "white",
+        cursor: "pointer",
+        fontSize: "12px",
+        fontWeight: "bold",
+        borderRadius: "4px",
+      }}
+    >
+      Download as Excel
+    </button>
+  );
 };
 
 export default ExportToExcel;

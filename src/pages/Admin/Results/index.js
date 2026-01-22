@@ -78,6 +78,47 @@ function Results() {
 
   return (
     <>
+      <div
+        className="no_print"
+        style={{
+          position: "sticky",
+          top: "12px",
+          zIndex: 10,
+          backgroundColor: "white",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.12)",
+          border: "1px solid #cbd5e1",
+          margin: "1rem auto",
+          maxWidth: "720px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px",
+        }}
+      >
+        <div style={{ fontWeight: "600", color: "#334155" }}>Actions</div>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <button
+            onClick={() => window.print()}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: "#007bff",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Print
+          </button>
+          <div style={{ display: "flex" }}>
+            <ExportToExcel tableId="myTable" filename={filename} />
+          </div>
+        </div>
+      </div>
       <Header />
       <div
         className="current_level"
@@ -100,15 +141,8 @@ function Results() {
         {students.length > 0 && <Table students={students} />}
       </div>
       <div className="gp_tab no_print">
-        <div className="transcript_btn">
-          <button onClick={() => window.print()}>Print</button>
-        </div>
-        <div>
-          <ExportToExcel
-            tableId="myTable"
-            filename={filename}
-          />
-        </div>
+        <div className="transcript_btn"></div>
+        <div></div>
       </div>
     </>
   );

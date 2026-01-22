@@ -54,6 +54,10 @@ code {
     display: none;
   }
 
+  .no_print {
+    display: none !important;
+  }
+
   /* Force page breaks after elements */
   .page_break {
     page-break-before: always;
