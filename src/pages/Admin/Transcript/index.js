@@ -181,11 +181,9 @@ function AdminTranscript() {
         </div>
         <div class="student_dashboard_bod">
           <div class="student_dashboard_body_details">
-            {transcriptType !== "university" && (
               <p>
                 Name of Student: <b>{student.fullname}</b>
               </p>
-            )}
             <p>
               Reg. No: <b>{student.reg_no}</b>
             </p>
