@@ -13,7 +13,7 @@ function AdminTranscript() {
   const { socket } = useContext(ValueContext);
   const [student, setStudent] = useState({});
   const [show, setShow] = useState(false);
-  const [transcriptType, setTranscriptType] = useState('faculty');
+  const [transcriptType, setTranscriptType] = useState("faculty");
   const [overallUnits, setOverallUnits] = useState(0);
   const [overallGp, setOverallGp] = useState(0);
 
@@ -31,19 +31,23 @@ function AdminTranscript() {
       .then((res) => res.json())
       .then((json) => {
         if (!Array.isArray(json)) return;
+        const currentLevel = Number(level);
         let units = 0;
         let gp = 0;
-        json.forEach((semester) => {
-          semester?.courses?.forEach((course) => {
-            units += Number(course.unit_load) || 0;
-            gp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+        json
+          .filter((semester) => Number(semester.level) <= currentLevel)
+          .forEach((semester) => {
+            semester?.courses?.forEach((course) => {
+              units += Number(course.unit_load) || 0;
+              gp +=
+                (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+            });
           });
-        });
         setOverallUnits(units);
         setOverallGp(gp);
       })
       .catch((err) => console.log(err));
-  }, [_id]);
+  }, [_id, level]);
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -82,22 +86,6 @@ function AdminTranscript() {
           </div>
           <div style={{ display: "flex", gap: "6px" }}>
             <button
-              onClick={() => setTranscriptType("faculty")}
-              style={{
-                padding: "4px 10px",
-                border: "none",
-                backgroundColor:
-                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
-                color: transcriptType === "faculty" ? "white" : "#333",
-                cursor: "pointer",
-                fontSize: "12px",
-                fontWeight: "bold",
-                borderRadius: "4px",
-              }}
-            >
-              Faculty
-            </button>
-            <button
               onClick={() => setTranscriptType("university")}
               style={{
                 padding: "4px 10px",
@@ -112,6 +100,22 @@ function AdminTranscript() {
               }}
             >
               University
+            </button>
+            <button
+              onClick={() => setTranscriptType("faculty")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "faculty" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              Faculty
             </button>
           </div>
         </div>
@@ -152,13 +156,15 @@ function AdminTranscript() {
                   <>
                     <p>University of Nigeria, Nsukka</p>
                     <p>Office of the Registrar (Examinations Unit)</p>
-                    <p>Doctor of Pharmacy Professional Examination Results Sheet</p>
+                    <p>
+                      Doctor of Pharmacy Professional Examination Results Sheet
+                    </p>
                   </>
                 ) : (
                   <>
-                    <p>Faculty of Pharmaceutical Sciences</p>
                     <p>University of Nigeria Nsukka</p>
-                    <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
+                    <p>Faculty of Pharmaceutical Sciences</p>
+                    <p>PHARMD PROFESSIONAL EXAMINATION RESULT SHEET</p>
                   </>
                 )}
                 <i style={{ fontSize: "x-large", fontWeight: "bold" }}>
@@ -175,21 +181,23 @@ function AdminTranscript() {
         </div>
         <div class="student_dashboard_bod">
           <div class="student_dashboard_body_details">
+            {transcriptType !== "university" && (
               <p>
                 Name of Student: <b>{student.fullname}</b>
               </p>
-              <p>
-                Reg. No: <b>{student.reg_no}</b>
-              </p>
-              <p>
-                Session: <b>{sesion}</b>
-              </p>
-              <p>
-                Level: <b>{level}</b>
-              </p>
-              <p>
-                mode of entry: <b>{student.moe}</b>
-              </p>
+            )}
+            <p>
+              Reg. No: <b>{student.reg_no}</b>
+            </p>
+            <p>
+              Session: <b>{sesion}</b>
+            </p>
+            <p>
+              Level: <b>{level}</b>
+            </p>
+            <p>
+              mode of entry: <b>{student.moe}</b>
+            </p>
           </div>
 
           <Table

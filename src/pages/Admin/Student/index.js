@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import "./adminstudentdashboard.css";
 import unn from "../../../data/unn.png";
 import Table from "./ocmponents/Table";
@@ -31,24 +37,26 @@ function AdminStudentDashboard() {
 
   const fetchStudentData = useCallback(async () => {
     if (!_id) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/student/results/semester/${_id}`);
-      
+      const response = await fetch(
+        `${API_BASE_URL}/api/student/results/semester/${_id}`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const json = await response.json();
       const semesters = Array.isArray(json) ? json : [];
-      
+
       setTotal_semesters(semesters);
       setSemester(semesters[semesters.length - 1] || {});
     } catch (err) {
-      console.error('Failed to fetch student data:', err);
+      console.error("Failed to fetch student data:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -59,24 +67,28 @@ function AdminStudentDashboard() {
     fetchStudentData();
   }, [fetchStudentData]);
 
-  const handleSemesterChange = useCallback((e) => {
-    const index = parseInt(e.target.value);
-    if (total_semesters[index]) {
-      setSemester(total_semesters[index]);
-    }
-  }, [total_semesters]);
+  const handleSemesterChange = useCallback(
+    (e) => {
+      const index = parseInt(e.target.value);
+      if (total_semesters[index]) {
+        setSemester(total_semesters[index]);
+      }
+    },
+    [total_semesters]
+  );
 
   const handleGeneratePDF = useCallback(() => {
     if (!semester?.student_id?.fullname) return;
-    
+
     generatePDF(target, {
       filename: `${semester.student_id.fullname} result statement.pdf`,
     });
   }, [semester]);
 
   const handleNavigateToTranscript = useCallback(() => {
-    if (!semester?.session || !semester?.level || !semester?.student_id?._id) return;
-    
+    if (!semester?.session || !semester?.level || !semester?.student_id?._id)
+      return;
+
     navigate(
       `/admin/student/transcript/${semester.session}/${semester.level}/${semester.student_id._id}`
     );
@@ -96,7 +108,10 @@ function AdminStudentDashboard() {
         <div className="error-message" style={{ color: "red" }}>
           <h3>Error loading student data</h3>
           <p>{error}</p>
-          <button onClick={fetchStudentData} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+          <button
+            onClick={fetchStudentData}
+            style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}
+          >
             Retry
           </button>
         </div>
@@ -108,7 +123,10 @@ function AdminStudentDashboard() {
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <h3>No student data found</h3>
-        <button onClick={() => navigate('/admin')} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+        <button
+          onClick={() => navigate("/admin")}
+          style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}
+        >
           Back to Admin
         </button>
       </div>
@@ -142,22 +160,6 @@ function AdminStudentDashboard() {
           </div>
           <div style={{ display: "flex", gap: "6px" }}>
             <button
-              onClick={() => setTranscriptType("faculty")}
-              style={{
-                padding: "4px 10px",
-                border: "none",
-                backgroundColor:
-                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
-                color: transcriptType === "faculty" ? "white" : "#333",
-                cursor: "pointer",
-                fontSize: "12px",
-                fontWeight: "bold",
-                borderRadius: "4px",
-              }}
-            >
-              Faculty
-            </button>
-            <button
               onClick={() => setTranscriptType("university")}
               style={{
                 padding: "4px 10px",
@@ -172,6 +174,22 @@ function AdminStudentDashboard() {
               }}
             >
               University
+            </button>
+            <button
+              onClick={() => setTranscriptType("faculty")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "faculty" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              Faculty
             </button>
           </div>
         </div>
@@ -231,22 +249,34 @@ function AdminStudentDashboard() {
             </div>
             <div className="dashboard_header">
               <div className="student_dashboard_head_title">
-                <p>Faculty of Pharmaceutical Sciences</p>
-                <p>University of Nigeria Nsukka</p>
-                <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
+                {transcriptType === "university" ? (
+                  <>
+                    <p>University of Nigeria, Nsukka</p>
+                    <p>Office of the Registrar (Examinations Unit)</p>
+                    <p>
+                      Doctor of Pharmacy Professional Examination Results Sheet
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>University of Nigeria Nsukka</p>
+                    <p>Faculty of Pharmaceutical Sciences</p>
+                    <p>PHARMD PROFESSIONAL EXAMINATION RESULT SHEET</p>
+                  </>
+                )}
                 <i style={{ fontSize: "x-large", fontWeight: "bold" }}>
-                  ({transcriptType === "faculty"
-                    ? "Faculty Copy"
-                    : "University Copy"})
+                  {transcriptType === "faculty" ? "(Faculty Copy)" : ""}
                 </i>
               </div>
             </div>
             <div className="passport">
               <div className="passport_img">
-                <img 
-                  src={semester?.student_id?.profile_image || unn} 
-                  alt="Student" 
-                  onError={(e) => { e.target.src = unn; }}
+                <img
+                  src={semester?.student_id?.profile_image || unn}
+                  alt="Student"
+                  onError={(e) => {
+                    e.target.src = unn;
+                  }}
                 />
               </div>
             </div>
@@ -254,17 +284,19 @@ function AdminStudentDashboard() {
         </div>
         <div className="student_dashboard_body">
           <div className="student_dashboard_body_details">
+            {transcriptType !== "university" && (
+              <p>
+                Name: <b>{semester?.student_id?.fullname || "N/A"}</b>
+              </p>
+            )}
             <p>
-              Name: <b>{semester?.student_id?.fullname || 'N/A'}</b>
-            </p>
-            <p>
-              Reg. No: <b>{semester?.student_id?.reg_no || 'N/A'}</b>
+              Reg. No: <b>{semester?.student_id?.reg_no || "N/A"}</b>
             </p>
             <p>
               Session:{" "}
               <b>
                 <select
-                  value={total_semesters.findIndex(s => s === semester)}
+                  value={total_semesters.findIndex((s) => s === semester)}
                   onChange={handleSemesterChange}
                 >
                   {total_semesters.map((sem, i) => (
@@ -276,13 +308,20 @@ function AdminStudentDashboard() {
               </b>
             </p>
             <p>
-              Level: <b>{semester?.level || 'N/A'}</b>
+              Level: <b>{semester?.level || "N/A"}</b>
             </p>
             <p>
-              Semester: <b>{semester?.semester === 1 ? "First" : semester?.semester === 2 ? "Second" : 'N/A'}</b>
+              Semester:{" "}
+              <b>
+                {semester?.semester === 1
+                  ? "First"
+                  : semester?.semester === 2
+                  ? "Second"
+                  : "N/A"}
+              </b>
             </p>
             <p>
-              Mode of entry: <b>{semester?.student_id?.moe || 'N/A'}</b>
+              Mode of entry: <b>{semester?.student_id?.moe || "N/A"}</b>
             </p>
           </div>
           {semester?.courses?.length > 0 ? (
@@ -297,32 +336,67 @@ function AdminStudentDashboard() {
             <div className="transcript_btn"></div>
           </div>
           <div className="signature">
-            <div className="exam_office">
-              <p
-                style={{
-                  textTransform: "capitalize",
-                  fontWeight: "bold",
-                }}
-              >
-                chukwuma chinyere p. {formattedToday}
-              </p>
-              <p style={{ borderTop: "1px dotted black" }}>
-                Name and Signature of Examination Officer (with date)
-              </p>
-            </div>
-            <div className="dean">
-              <p
-                style={{
-                  textTransform: "capitalize",
-                  fontWeight: "bold",
-                }}
-              >
-                Prof. c. s. Nworu {formattedToday}
-              </p>
-              <p style={{ borderTop: "1px dotted black" }}>
-                Name & Signature of Dean (with date)
-              </p>
-            </div>
+            {transcriptType === "university" ? (
+              <>
+                <div className="exam_office">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Computing Officer (with Date)
+                  </p>
+                </div>
+                <div className="dean">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Crossing-checking Officer (with Date)
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="exam_office">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Mrs Uchenna C. Ugwu {formattedToday}
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Faculty Officer (with date)
+                  </p>
+                </div>
+                <div className="dean">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Prof. c. s. Nworu {formattedToday}
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name & Signature of Dean (with date)
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="grade_table">
