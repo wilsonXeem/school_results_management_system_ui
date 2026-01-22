@@ -107,7 +107,7 @@ function Table({
               {level == 100
                 ? "courses"
                 : transcriptType === "university"
-                ? "carry-over courses"
+                ? "non-professional courses"
                 : "non-professional courses"}
             </p>
           )}
