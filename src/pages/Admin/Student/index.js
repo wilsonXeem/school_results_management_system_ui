@@ -15,6 +15,7 @@ function AdminStudentDashboard() {
   const [total_semesters, setTotal_semesters] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [transcriptType, setTranscriptType] = useState("faculty");
 
   const formattedToday = useMemo(() => {
     const today = new Date();
@@ -116,6 +117,110 @@ function AdminStudentDashboard() {
 
   return (
     <>
+      <div
+        className="no_print"
+        style={{
+          position: "sticky",
+          top: "12px",
+          zIndex: 10,
+          backgroundColor: "white",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.12)",
+          border: "1px solid #cbd5e1",
+          margin: "1rem auto",
+          maxWidth: "820px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ fontWeight: "600", color: "#334155" }}>
+            Transcript Type
+          </div>
+          <div style={{ display: "flex", gap: "6px" }}>
+            <button
+              onClick={() => setTranscriptType("faculty")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "faculty" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              Faculty
+            </button>
+            <button
+              onClick={() => setTranscriptType("university")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "university" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "university" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              University
+            </button>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <button
+            onClick={handleGeneratePDF}
+            disabled={!semester?.student_id?.fullname}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: "#007bff",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+              opacity: semester?.student_id?.fullname ? 1 : 0.6,
+            }}
+          >
+            Print Statement
+          </button>
+          <button
+            onClick={handleNavigateToTranscript}
+            disabled={
+              !semester?.session ||
+              !semester?.level ||
+              !semester?.student_id?._id
+            }
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: "#007bff",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+              opacity:
+                semester?.session &&
+                semester?.level &&
+                semester?.student_id?._id
+                  ? 1
+                  : 0.6,
+            }}
+          >
+            Generate Transcript
+          </button>
+        </div>
+      </div>
       <div className="student_dashboard" ref={target}>
         <div className="d_head">
           <div className="student_dashboard_head">
@@ -130,7 +235,9 @@ function AdminStudentDashboard() {
                 <p>University of Nigeria Nsukka</p>
                 <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
                 <i style={{ fontSize: "x-large", fontWeight: "bold" }}>
-                  (Faculty Copy)
+                  ({transcriptType === "faculty"
+                    ? "Faculty Copy"
+                    : "University Copy"})
                 </i>
               </div>
             </div>
@@ -291,20 +398,7 @@ function AdminStudentDashboard() {
           </table>
         </div>
       </div>
-      <div className="transcript_button">
-        <button
-          onClick={handleGeneratePDF}
-          disabled={!semester?.student_id?.fullname}
-        >
-          Print Statement
-        </button>
-        <button
-          onClick={handleNavigateToTranscript}
-          disabled={!semester?.session || !semester?.level || !semester?.student_id?._id}
-        >
-          Generate Transcript
-        </button>
-      </div>
+      <div className="transcript_button"></div>
     </>
   );
 }

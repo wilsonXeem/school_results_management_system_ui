@@ -13,6 +13,9 @@ function AdminTranscript() {
   const { socket } = useContext(ValueContext);
   const [student, setStudent] = useState({});
   const [show, setShow] = useState(false);
+  const [transcriptType, setTranscriptType] = useState('faculty');
+  const [overallUnits, setOverallUnits] = useState(0);
+  const [overallGp, setOverallGp] = useState(0);
 
   useEffect(() => {
     fetch(`http://127.0.0.1:1234/api/student/results/session/${_id}/${sesion}`)
@@ -22,6 +25,25 @@ function AdminTranscript() {
       })
       .catch((err) => console.log(err));
   }, []);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:1234/api/student/results/semester/${_id}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!Array.isArray(json)) return;
+        let units = 0;
+        let gp = 0;
+        json.forEach((semester) => {
+          semester?.courses?.forEach((course) => {
+            units += Number(course.unit_load) || 0;
+            gp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+          });
+        });
+        setOverallUnits(units);
+        setOverallGp(gp);
+      })
+      .catch((err) => console.log(err));
+  }, [_id]);
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -34,7 +56,85 @@ function AdminTranscript() {
   const formattedToday = dd + "/" + mm + "/" + yyyy;
 
   return (
-    <>
+    <div>
+      <div
+        className="no_print"
+        style={{
+          position: "sticky",
+          top: "12px",
+          zIndex: 10,
+          backgroundColor: "white",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.12)",
+          border: "1px solid #cbd5e1",
+          margin: "1rem auto",
+          maxWidth: "820px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ fontWeight: "600", color: "#334155" }}>
+            Transcript Type
+          </div>
+          <div style={{ display: "flex", gap: "6px" }}>
+            <button
+              onClick={() => setTranscriptType("faculty")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "faculty" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "faculty" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              Faculty
+            </button>
+            <button
+              onClick={() => setTranscriptType("university")}
+              style={{
+                padding: "4px 10px",
+                border: "none",
+                backgroundColor:
+                  transcriptType === "university" ? "#007bff" : "#e9ecef",
+                color: transcriptType === "university" ? "white" : "#333",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                borderRadius: "4px",
+              }}
+            >
+              University
+            </button>
+          </div>
+        </div>
+        <button
+          onClick={() =>
+            generatePDF(target, {
+              filename: `${student.fullname} ${sesion} result`,
+            })
+          }
+          style={{
+            padding: "4px 10px",
+            border: "none",
+            backgroundColor: "#007bff",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "12px",
+            fontWeight: "bold",
+            borderRadius: "4px",
+          }}
+        >
+          Print
+        </button>
+      </div>
       <div class="student_db" id="transcript" ref={target}>
         <div className="d_head">
           <div class="student_dashboard_head">
@@ -48,11 +148,21 @@ function AdminTranscript() {
             <img src={unn} alt="" />
           </div> */}
               <div class="student_dashboard_head_title">
-                <p>Faculty of Pharmaceutical Sciences</p>
-                <p>University of Nigeria Nsukka</p>
-                <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
+                {transcriptType === "university" ? (
+                  <>
+                    <p>University of Nigeria, Nsukka</p>
+                    <p>Office of the Registrar (Examinations Unit)</p>
+                    <p>Doctor of Pharmacy Professional Examination Results Sheet</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Faculty of Pharmaceutical Sciences</p>
+                    <p>University of Nigeria Nsukka</p>
+                    <p>PHARM. D PROFESSIONAL EXAMINATION RESULT SHEET</p>
+                  </>
+                )}
                 <i style={{ fontSize: "x-large", fontWeight: "bold" }}>
-                  (Faculty Copy)
+                  {transcriptType === "faculty" ? "(Faculty Copy)" : ""}
                 </i>
               </div>
             </div>
@@ -88,6 +198,9 @@ function AdminTranscript() {
             second_semester={student.second_semester}
             first_external={student.first_external}
             second_external={student.second_external}
+            transcriptType={transcriptType}
+            overall_units={overallUnits}
+            overall_gp={overallGp}
             show={
               student.first_external?.length > 0 ||
               student.second_external?.length > 0
@@ -103,32 +216,67 @@ function AdminTranscript() {
           <div class="transcript_btn"></div>
         </div>
         <div class="signature">
-          <div class="exam_office">
-            <p
-              style={{
-                textTransform: "capitalize",
-                fontWeight: "bold",
-              }}
-            >
-              chukwuma chinyere p. {formattedToday}
-            </p>
-            <p style={{ borderTop: "1px dotted black" }}>
-              Name and Signature of Examination Officer (with date)
-            </p>
-          </div>
-          <div class="dean">
-            <p
-              style={{
-                textTransform: "capitalize",
-                fontWeight: "bold",
-              }}
-            >
-              Prof. c. s. Nworu {formattedToday}
-            </p>
-            <p style={{ borderTop: "1px dotted black" }}>
-              Name & Signature of Dean (with date)
-            </p>
-          </div>
+          {transcriptType === "university" ? (
+            <>
+              <div class="exam_office">
+                <p
+                  style={{
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                    minHeight: "1.2rem",
+                  }}
+                >
+                  &nbsp;
+                </p>
+                <p style={{ borderTop: "1px dotted black" }}>
+                  Name and Signature of Computing Officer (with Date)
+                </p>
+              </div>
+              <div class="dean">
+                <p
+                  style={{
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                    minHeight: "1.2rem",
+                  }}
+                >
+                  &nbsp;
+                </p>
+                <p style={{ borderTop: "1px dotted black" }}>
+                  Name and Signature of Crossing-checking Officer (with Date)
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div class="exam_office">
+                <p
+                  style={{
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Mrs Uchenna C. Ugwu {formattedToday}
+                </p>
+                <p style={{ borderTop: "1px dotted black" }}>
+                  Name and Signature of Faculty Officer (with date)
+                </p>
+              </div>
+              <div class="dean">
+                <p
+                  style={{
+                    textTransform: "capitalize",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Prof. c. s. Nworu {formattedToday}
+                </p>
+                <p style={{ borderTop: "1px dotted black" }}>
+                  Name & Signature of Dean (with date)
+                </p>
+              </div>
+            </>
+          )}
         </div>
         <div className="grade_table">
           <table>
@@ -205,20 +353,10 @@ function AdminTranscript() {
       </div>
 
       <div class="gp_tab">
-        <div class="transcript_btn">
-          <button
-            onClick={() =>
-              generatePDF(target, {
-                filename: `${student.fullname} ${sesion} result`,
-              })
-            }
-          >
-            Print
-          </button>
-        </div>
+        <div class="transcript_btn"></div>
         <div></div>
       </div>
-    </>
+    </div>
   );
 }
 

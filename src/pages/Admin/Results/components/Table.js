@@ -158,11 +158,11 @@ function Table({ students }) {
       {incomplete_students.length > 0 &&
         renderResultTable(incomplete_students, "Incomplete Students")}
 
-      {/* EXTERNAL STUDENTS */}
+      {/* CARRYOVER STUDENTS */}
       {externals.length > 0 && (
         <div>
           <h3 className="page_break" style={{ marginLeft: "1rem" }}>
-            Other Courses Results
+            Carryover Courses Results
           </h3>
           <table id="myTable">
             <thead>
