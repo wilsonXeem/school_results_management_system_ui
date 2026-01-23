@@ -62,7 +62,10 @@ function Transcript() {
 
     let units = 0;
     let gp = 0;
-    res.student.total_semesters.forEach((semester) => {
+    const currentLevel = Number(level);
+    res.student.total_semesters
+      .filter((semester) => Number(semester.level) <= currentLevel)
+      .forEach((semester) => {
       semester?.courses?.forEach((course) => {
         units += Number(course.unit_load) || 0;
         gp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
@@ -98,21 +101,6 @@ function Transcript() {
         <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#333' }}>Transcript Type:</div>
         <div style={{ display: 'flex', gap: '5px' }}>
           <button
-            onClick={() => setTranscriptType('faculty')}
-            style={{
-              padding: '8px 16px',
-              border: 'none',
-              backgroundColor: transcriptType === 'faculty' ? '#007bff' : '#e9ecef',
-              color: transcriptType === 'faculty' ? 'white' : '#333',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              borderRadius: '4px'
-            }}
-          >
-            Faculty
-          </button>
-          <button
             onClick={() => setTranscriptType('university')}
             style={{
               padding: '8px 16px',
@@ -126,6 +114,21 @@ function Transcript() {
             }}
           >
             University
+          </button>
+          <button
+            onClick={() => setTranscriptType('faculty')}
+            style={{
+              padding: '8px 16px',
+              border: 'none',
+              backgroundColor: transcriptType === 'faculty' ? '#007bff' : '#e9ecef',
+              color: transcriptType === 'faculty' ? 'white' : '#333',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              borderRadius: '4px'
+            }}
+          >
+            Faculty
           </button>
         </div>
       </div>
@@ -178,7 +181,7 @@ function Transcript() {
               Reg. No: <b>{student.reg_no}</b>
             </p>
             <p>
-              Programme: <b>Pharm. D</b>
+              Programme: <b>PHARMD</b>
             </p>
             <p>
               Session: <b>{session}</b>

@@ -103,8 +103,8 @@ function Table({
         {level !== 100 && (
           <p style={{ paddingLeft: "1rem", fontWeight: "bold" }}>
             {transcriptType === "university"
-              ? "carry-over courses"
-              : "non-professional courses"}
+              ? "non pharmacy courses"
+              : "non pharmacy courses"}
           </p>
         )}
         <table>
