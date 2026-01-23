@@ -18,7 +18,7 @@ const navItems = [
   { label: "Course Registration", to: "/admin/course-reg/sessions", icon: AppRegistrationIcon },
   { label: "Results", to: "/admin/results/sessions", icon: AssessmentIcon },
   { label: "Faculty Courses", to: "/admin/faculty/courses", icon: AccountBalanceIcon },
-  { label: "Non-Professional Courses", to: "/admin/faculty/external", icon: ScienceIcon },
+  { label: "Non-Pharmacy Courses", to: "/admin/faculty/external", icon: ScienceIcon },
   { label: "Probation Lists", to: "/admin/faculty/probation/sessions", icon: WarningAmberIcon },
   { label: "Error Students", to: "/admin/faculty/error/students/sessions", icon: ReportProblemIcon },
   { label: "Professionals", to: "/admin/professionals/sessions", icon: PeopleIcon },
