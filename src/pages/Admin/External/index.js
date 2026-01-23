@@ -51,7 +51,7 @@ function External() {
   return (
     <div class="department">
       <div class="header">
-        <h2>non-professional courses</h2>
+        <h2>non pharmacy courses</h2>
       </div>
       {load && <Loader />}
       <div className="current_session">
@@ -105,7 +105,7 @@ function External() {
         </div>
       </div>
       <div class="other_externals">
-        <h4>Other Non-Professional Courses</h4>
+        <h4>Other Non-Pharmacy Courses</h4>
         {externals?.length > 0 && (
           <div className="exs">
             {externals.map((external, i) => (

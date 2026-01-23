@@ -125,7 +125,7 @@ function AdminDashboard() {
           url={"/admin/faculty/courses"}
         />
         <Box
-          title={"Non-Professional Courses"}
+          title={"Non-Pharmacy Courses"}
           color={"blue"}
           url={"/admin/faculty/external"}
         />

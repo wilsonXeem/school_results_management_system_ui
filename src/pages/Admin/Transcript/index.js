@@ -366,7 +366,7 @@ function AdminTranscript() {
                   color: "white",
                 }}
               >
-                <th colSpan={3}>non-professional courses</th>
+                <th colSpan={3}>non pharmacy courses</th>
                 <th colSpan={3}>professional courses</th>
               </tr>
               <tr style={{ textTransform: "capitalize", fontWeight: "550" }}>
