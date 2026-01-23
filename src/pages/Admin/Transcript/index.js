@@ -221,38 +221,110 @@ function AdminTranscript() {
         <div class="gp_tab">
           <div class="transcript_btn"></div>
         </div>
-        <div class="signature">
+        <div
+          class="signature"
+          style={
+            transcriptType === "university" && Number(level) === 600
+              ? {
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "3rem",
+                }
+              : undefined
+          }
+        >
           {transcriptType === "university" ? (
-            <>
-              <div class="exam_office">
-                <p
-                  style={{
-                    textTransform: "capitalize",
-                    fontWeight: "bold",
-                    minHeight: "1.2rem",
-                  }}
-                >
-                  &nbsp;
-                </p>
-                <p style={{ borderTop: "1px dotted black" }}>
-                  Name and Signature of Computing Officer (with Date)
-                </p>
-              </div>
-              <div class="dean">
-                <p
-                  style={{
-                    textTransform: "capitalize",
-                    fontWeight: "bold",
-                    minHeight: "1.2rem",
-                  }}
-                >
-                  &nbsp;
-                </p>
-                <p style={{ borderTop: "1px dotted black" }}>
-                  Name and Signature of Crossing-checking Officer (with Date)
-                </p>
-              </div>
-            </>
+            Number(level) === 600 ? (
+              <>
+                <div class="exam_office">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Computing Officer (with Date)
+                  </p>
+                </div>
+                <div class="dean">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Cross-checking Officer (with Date)
+                  </p>
+                </div>
+                <div class="exam_office">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Certifying Officer (with Date)
+                  </p>
+                </div>
+                <div class="dean">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Dean of the Faculty (with Date)
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div class="exam_office">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Computing Officer (with Date)
+                  </p>
+                </div>
+                <div class="dean">
+                  <p
+                    style={{
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      minHeight: "1.2rem",
+                    }}
+                  >
+                    &nbsp;
+                  </p>
+                  <p style={{ borderTop: "1px dotted black" }}>
+                    Name and Signature of Crossing-checking Officer (with Date)
+                  </p>
+                </div>
+              </>
+            )
           ) : (
             <>
               <div class="exam_office">
