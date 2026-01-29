@@ -38,7 +38,69 @@ function Table({
 
   return (
     <div class="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
-      {level !== 100 && (
+      {/* Special handling for 100 level - show all courses in one table */}
+      {Number(level) === 100 && (first_external?.length > 0 || second_external?.length > 0) && (
+        <table>
+          <tr>
+            <th className="center">s/n</th>
+            <th>course code</th>
+            <th>course title</th>
+            <th>unit</th>
+            <th>score</th>
+            <th>grade</th>
+            <th>gp</th>
+          </tr>
+          <tr>
+            <th
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                padding: "0.5rem",
+              }}
+              colSpan={2}
+            >
+              first semester
+            </th>
+          </tr>
+          {first_external?.map((course, i) => (
+            <tr key={i}>
+              <td className="center">{i + 1}</td>
+              <td>{course.course_code}</td>
+              <td>{course.course_title}</td>
+              <td>{course.unit_load}</td>
+              <td>{course.total}</td>
+              <td>{renderGrade(course.grade)}</td>
+              <td>{course.unit_load * course.grade}</td>
+            </tr>
+          ))}
+          <tr>
+            <th
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                padding: "0.5rem",
+              }}
+              colSpan={2}
+            >
+              Second semester
+            </th>
+          </tr>
+          {second_external?.map((course, i) => (
+            <tr key={i}>
+              <td className="center">{i + 1}</td>
+              <td>{course.course_code}</td>
+              <td>{course.course_title}</td>
+              <td>{course.unit_load}</td>
+              <td>{course.total}</td>
+              <td>{renderGrade(course.grade)}</td>
+              <td>{course.unit_load * course.grade}</td>
+            </tr>
+          ))}
+        </table>
+      )}
+      
+      {/* Regular handling for other levels */}
+      {Number(level) !== 100 && (
         <table>
           <tr>
             <th className="center">s/n</th>
