@@ -1,4 +1,17 @@
 import React, { useMemo } from "react";
+import professionals from "../../../../data/professionals";
+import external from "../../../../data/external";
+
+// Function to check if a course is approved for GPA calculation
+const isApprovedCourse = (courseCode) => {
+  const code = courseCode.toLowerCase();
+  return code in professionals || code in external;
+};
+
+// Function to filter approved courses
+const filterApprovedCourses = (courses) => {
+  return courses?.filter(course => isApprovedCourse(course.course_code)) || [];
+};
 
 function Table({
   level,
@@ -16,8 +29,9 @@ function Table({
     const gradeLabels = ["F", "E", "D", "C", "B", "A"];
     
     const calculateTotals = (courses) => {
-      if (courses?.length > 0) {
-        courses.forEach((course) => {
+      const approvedCourses = filterApprovedCourses(courses);
+      if (approvedCourses.length > 0) {
+        approvedCourses.forEach((course) => {
           total_units += course.unit_load;
           total_gp += course.unit_load * course.grade;
         });
