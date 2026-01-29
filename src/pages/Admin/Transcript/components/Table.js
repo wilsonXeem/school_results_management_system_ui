@@ -142,7 +142,7 @@ function Table({
           {first_semester.map((course, i) => (
             <tr key={i} style={{ fontSize: "1.5rem" }}>
               <td className="center">{i + 1}</td>
-              <td>{course.course_code}</td>
+              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{Number(course.total).toFixed(0)}</td>
@@ -170,7 +170,7 @@ function Table({
           {Number(level) !== 600 && first_external?.map((course, i) => (
             <tr key={`ext1-${i}`} style={{ fontSize: "1.5rem" }}>
               <td className="center">{first_semester.length + i + 1}</td>
-              <td>{course.course_code}</td>
+              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{Number(course.total).toFixed(0)}</td>
@@ -226,7 +226,7 @@ function Table({
             second_semester.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{course.course_code}</td>
+                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed(0)}</td>
@@ -254,7 +254,7 @@ function Table({
           {Number(level) !== 600 && second_external?.map((course, i) => (
             <tr key={`ext2-${i}`}>
               <td className="center">{(second_semester?.length || 0) + i + 1}</td>
-              <td>{course.course_code}</td>
+              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{Number(course.total).toFixed(0)}</td>
@@ -329,7 +329,7 @@ function Table({
             {first_external.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{course.course_code}</td>
+                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed()}</td>
@@ -379,7 +379,7 @@ function Table({
             {second_external.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{course.course_code}</td>
+                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed()}</td>

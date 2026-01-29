@@ -356,7 +356,12 @@ function AdminTranscript() {
             </>
           )}
         </div>
-        <div className="grade_table">
+        <div style={{ marginTop: "0.5rem", marginBottom: "0.5rem", textAlign: "center" }}>
+          <p style={{ fontWeight: "bold", fontSize: "14px" }}>
+            #Units not included in CGPA computation
+          </p>
+        </div>
+        <div className="grade_table" style={{ marginTop: "0.5rem" }}>
           <table>
             <thead>
               <tr
