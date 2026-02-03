@@ -14,6 +14,7 @@ function Results() {
   const [students, setStudents] = useState([]);
   const [load, setLoad] = useState(false);
   const [error, setError] = useState(null);
+  const [sortMode, setSortMode] = useState("none");
 
   const fetchStudents = useCallback(async () => {
     if (!class_id || !session || !semester || !level) return;
@@ -59,6 +60,18 @@ function Results() {
     [session, level, semester]
   );
 
+  const sortedStudents = useMemo(() => {
+    if (!students?.length || sortMode === "none") return students;
+
+    const sorted = [...students];
+    if (sortMode === "session_gpa") {
+      sorted.sort((a, b) => (b.session_gpa || 0) - (a.session_gpa || 0));
+    } else if (sortMode === "cgpa") {
+      sorted.sort((a, b) => (b.cgpa || 0) - (a.cgpa || 0));
+    }
+    return sorted;
+  }, [students, sortMode]);
+
   if (error) {
     return (
       <>
@@ -98,7 +111,52 @@ function Results() {
         }}
       >
         <div style={{ fontWeight: "600", color: "#334155" }}>Actions</div>
-        <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <button
+            onClick={() => setSortMode("session_gpa")}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: sortMode === "session_gpa" ? "#0f172a" : "#e9ecef",
+              color: sortMode === "session_gpa" ? "white" : "#333",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Sort by Session GPA
+          </button>
+          <button
+            onClick={() => setSortMode("cgpa")}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: sortMode === "cgpa" ? "#0f172a" : "#e9ecef",
+              color: sortMode === "cgpa" ? "white" : "#333",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Sort by Overall GPA
+          </button>
+          <button
+            onClick={() => setSortMode("none")}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: sortMode === "none" ? "#0f172a" : "#e9ecef",
+              color: sortMode === "none" ? "white" : "#333",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Default Order
+          </button>
           <button
             onClick={() => window.print()}
             style={{
@@ -138,7 +196,7 @@ function Results() {
             <p>No students found for this class.</p>
           </div>
         )}
-        {students.length > 0 && <Table students={students} />}
+        {students.length > 0 && <Table students={sortedStudents} />}
       </div>
       <div className="gp_tab no_print">
         <div className="transcript_btn"></div>

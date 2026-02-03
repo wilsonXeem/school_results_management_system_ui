@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./topstudents.css";
 import Loader from "../../../components/Loader";
 
 function TopStudents() {
@@ -49,50 +50,62 @@ function TopStudents() {
 
   return (
     <div className="top_students">
-      <div className="sessions">
-        <h2>Sessions</h2>
-        {sessions.map((session, index) => (
-          <p
-            key={index}
-            onClick={() => {
-              setClasses(session.classes);
-              setCurrent_session(session.session);
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            {session.session}
-          </p>
-        ))}
+      <div className="top_students_toolbar no_print">
+        <div className="panel">
+          <h3>Sessions</h3>
+          <div className="panel_row">
+            {sessions.map((session) => (
+              <button
+                key={session.session}
+                type="button"
+                className={`panel_item ${
+                  current_session === session.session ? "active" : ""
+                }`}
+                onClick={() => {
+                  setClasses(session.classes || []);
+                  setCurrent_session(session.session);
+                  setCurrent_class("");
+                  setStudents([]);
+                }}
+              >
+                {session.session}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="panel">
+          <h3>Classes</h3>
+          <div className="panel_row">
+            {classes.map((level) => (
+              <button
+                key={level._id}
+                type="button"
+                className={`panel_item ${
+                  current_class === level.level ? "active" : ""
+                }`}
+                onClick={() => {
+                  setCurrent_class(level.level);
+                  setLoad(true);
+                  fetch(`http://127.0.0.1:1234/api/class/topstudents/${level._id}`)
+                    .then((res) => res.json())
+                    .then((json) => {
+                      setStudents(json.topStudents);
+                      setLoad(false);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      setLoad(false);
+                    });
+                }}
+              >
+                {level.level} Level
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="classes">
-        <h2>Classes</h2>
-        <h3>Session: {current_session}</h3>
-        {classes.map((level, index) => (
-          <p
-            key={index}
-            onClick={() => {
-              setCurrent_class(level.level);
-              setLoad(true);
-              fetch(`http://127.0.0.1:1234/api/class/topstudents/${level._id}`)
-                .then((res) => res.json())
-                .then((json) => {
-                  setStudents(json.topStudents);
-                  setLoad(false);
-                })
-                .catch((err) => {
-                  console.log(err);
-                  setLoad(false);
-                });
-            }}
-            style={{ cursor: "pointer" }}
-          >
-            {level.level}
-          </p>
-        ))}
-      </div>
-
-      <div className="top_students" ref={printRef}>
+      <div className="top_students_table" ref={printRef}>
         <h2>
           Top 10 Students in {current_class} Level, {current_session} Session
         </h2>
@@ -123,9 +136,9 @@ function TopStudents() {
       </div>
 
       {load && <Loader />}
-      
+
       {students.length > 0 && (
-        <button className="print-btn" onClick={handlePrint}>
+        <button className="print-btn no_print" onClick={handlePrint}>
           Print Top Students
         </button>
       )}

@@ -9,8 +9,7 @@ function Table({ students }) {
   const { uploadedCourses, complete_students, incomplete_students, externals } = useMemo(() => {
     if (!students?.length) return { uploadedCourses: [], complete_students: [], incomplete_students: [], externals: [] };
     
-    // Sort students without mutating original array
-    const sortedStudents = [...students].sort((a, b) => a.fullname.localeCompare(b.fullname));
+    const sortedStudents = [...students];
     
     const current_semester = levels[level]?.[semester] || {};
     const course_codes = Object.keys(current_semester);
@@ -57,6 +56,17 @@ function Table({ students }) {
   }, [students, level, semester]);
 
   const gradeLabels = useMemo(() => ["F", "E", "D", "C", "B", "A"], []);
+
+  const calculateGpa = useCallback((courses = []) => {
+    let totalUnits = 0;
+    let totalGp = 0;
+    courses.forEach((course) => {
+      totalUnits += Number(course.unit_load) || 0;
+      totalGp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+    });
+    const gpa = totalUnits > 0 ? totalGp / totalUnits : 0;
+    return { totalUnits, totalGp, gpa };
+  }, []);
   
   const handleStudentClick = useCallback((studentId) => {
     navigate(`/admin/student/${studentId}`);
@@ -124,7 +134,7 @@ function Table({ students }) {
                 );
               })}
               <td className="center" style={{ fontWeight: "bold" }}>
-                {student?.gpa?.toFixed(2)}
+                {calculateGpa(student.courses).gpa.toFixed(2)}
               </td>
               {semester === "2" && (
                 <>
@@ -132,10 +142,10 @@ function Table({ students }) {
                     className="center"
                     style={{
                       fontWeight: "bold",
-                      color: student?.session_gpa < 2.5 ? "red" : "black",
+                      color: (student?.session_gpa ?? calculateGpa(student.courses).gpa) < 2.5 ? "red" : "black",
                     }}
                   >
-                    {student?.session_gpa?.toFixed(2)}
+                    {(student?.session_gpa ?? calculateGpa(student.courses).gpa).toFixed(2)}
                   </td>
                   <td className="center" style={{ fontWeight: "bold" }}>
                     {student.cgpa?.toFixed(2)}
