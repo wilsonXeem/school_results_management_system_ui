@@ -61,10 +61,29 @@ function Results() {
   );
 
   const sortedStudents = useMemo(() => {
-    if (!students?.length || sortMode === "none") return students;
+    if (!students?.length) return students;
 
     const sorted = [...students];
-    if (sortMode === "session_gpa") {
+    if (sortMode === "none") {
+      sorted.sort((a, b) =>
+        String(a.fullname || "").localeCompare(String(b.fullname || ""), "en", {
+          sensitivity: "base",
+        })
+      );
+    } else if (sortMode === "semester_gpa") {
+      sorted.sort((a, b) => {
+        const calc = (student) => {
+          let totalUnits = 0;
+          let totalGp = 0;
+          (student?.courses || []).forEach((course) => {
+            totalUnits += Number(course.unit_load) || 0;
+            totalGp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+          });
+          return totalUnits > 0 ? totalGp / totalUnits : 0;
+        };
+        return calc(b) - calc(a);
+      });
+    } else if (sortMode === "session_gpa") {
       sorted.sort((a, b) => (b.session_gpa || 0) - (a.session_gpa || 0));
     } else if (sortMode === "cgpa") {
       sorted.sort((a, b) => (b.cgpa || 0) - (a.cgpa || 0));
@@ -103,7 +122,7 @@ function Results() {
           boxShadow: "0 4px 8px rgba(0,0,0,0.12)",
           border: "1px solid #cbd5e1",
           margin: "1rem auto",
-          maxWidth: "720px",
+          maxWidth: "980px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -112,6 +131,21 @@ function Results() {
       >
         <div style={{ fontWeight: "600", color: "#334155" }}>Actions</div>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <button
+            onClick={() => setSortMode("semester_gpa")}
+            style={{
+              padding: "4px 10px",
+              border: "none",
+              backgroundColor: sortMode === "semester_gpa" ? "#0f172a" : "#e9ecef",
+              color: sortMode === "semester_gpa" ? "white" : "#333",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Sort by Semester GPA
+          </button>
           <button
             onClick={() => setSortMode("session_gpa")}
             style={{

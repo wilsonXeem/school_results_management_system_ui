@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./topstudents.css";
 import Loader from "../../../components/Loader";
+import departments from "../../../data/courses";
 
 function TopStudents() {
   const [sessions, setSessions] = useState([]);
@@ -8,8 +9,54 @@ function TopStudents() {
   const [classes, setClasses] = useState([]);
   const [current_class, setCurrent_class] = useState("");
   const [students, setStudents] = useState([]);
+  const [topLimit, setTopLimit] = useState(10);
+  const [current_department, setCurrent_department] = useState("");
   const [load, setLoad] = useState(false);
   const printRef = useRef(null);
+
+  const loadTopStudents = (limitOverride) => {
+    if (!current_class) return;
+    const limit = limitOverride ?? topLimit;
+    setLoad(true);
+    const classObj = classes.find((c) => c.level === current_class);
+    if (!classObj?._id) {
+      setLoad(false);
+      return;
+    }
+    if (current_department) {
+      fetch(
+        `http://127.0.0.1:1234/api/class/topstudents/department/${classObj._id}?limit=${limit}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ department_id: current_department }),
+        }
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          setStudents(json.topStudents);
+          setLoad(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoad(false);
+        });
+      return;
+    }
+
+    fetch(
+      `http://127.0.0.1:1234/api/class/topstudents/${classObj._id}?limit=${limit}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        setStudents(json.topStudents);
+        setLoad(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoad(false);
+      });
+  };
 
   useEffect(() => {
     setLoad(true);
@@ -65,6 +112,7 @@ function TopStudents() {
                   setClasses(session.classes || []);
                   setCurrent_session(session.session);
                   setCurrent_class("");
+                  setCurrent_department("");
                   setStudents([]);
                 }}
               >
@@ -85,8 +133,11 @@ function TopStudents() {
                 }`}
                 onClick={() => {
                   setCurrent_class(level.level);
+                  setCurrent_department("");
                   setLoad(true);
-                  fetch(`http://127.0.0.1:1234/api/class/topstudents/${level._id}`)
+                  fetch(
+                    `http://127.0.0.1:1234/api/class/topstudents/${level._id}?limit=${topLimit}`
+                  )
                     .then((res) => res.json())
                     .then((json) => {
                       setStudents(json.topStudents);
@@ -103,11 +154,53 @@ function TopStudents() {
             ))}
           </div>
         </div>
+        <div className="panel panel_full">
+          <h3>Departments</h3>
+          <div className="panel_row">
+            {Object.entries(departments).map(([deptId, deptName]) => (
+              <button
+                key={deptId}
+                type="button"
+                className={`panel_item ${
+                  current_department === deptId ? "active" : ""
+                }`}
+                onClick={() => {
+                  if (!current_class) return;
+                  setCurrent_department(deptId);
+                  setLoad(true);
+                  const classObj = classes.find((c) => c.level === current_class);
+                  if (!classObj?._id) return;
+                  fetch(
+                    `http://127.0.0.1:1234/api/class/topstudents/department/${classObj._id}?limit=${topLimit}`,
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ department_id: deptId }),
+                    }
+                  )
+                    .then((res) => res.json())
+                    .then((json) => {
+                      setStudents(json.topStudents);
+                      setLoad(false);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      setLoad(false);
+                    });
+                }}
+              >
+                {deptName}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="top_students_table" ref={printRef}>
         <h2>
-          Top 10 Students in {current_class} Level, {current_session} Session
+          Top {topLimit} Students in {current_class} Level, {current_session} Session
+          {current_department &&
+            ` • ${departments[current_department]}`}
         </h2>
         <div className="table">
           {students.length > 0 && (
@@ -117,7 +210,7 @@ function TopStudents() {
                   <th>S/N</th>
                   <th>Reg No</th>
                   <th>Fullname</th>
-                  <th>CGPA</th>
+                  <th>{current_department ? "Dept Avg" : "CGPA"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -126,13 +219,40 @@ function TopStudents() {
                     <td>{index + 1}</td>
                     <td>{student.reg_no}</td>
                     <td>{student.fullname}</td>
-                    <td>{student.cgpa.toFixed(2)}</td>
+                    <td>
+                      {(() => {
+                        const value = current_department
+                          ? student.department_gpa
+                          : student.cgpa;
+                        if (typeof value === "number") return value.toFixed(2);
+                        if (value === null || value === undefined) return "--";
+                        const parsed = Number(value);
+                        return Number.isFinite(parsed)
+                          ? parsed.toFixed(2)
+                          : "--";
+                      })()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
         </div>
+        {students.length > 0 && (
+          <div className="top_students_more no_print">
+            <button
+              type="button"
+              className="view_more"
+              onClick={() => {
+                const nextLimit = topLimit + 10;
+                setTopLimit(nextLimit);
+                loadTopStudents(nextLimit);
+              }}
+            >
+              View 10 More
+            </button>
+          </div>
+        )}
       </div>
 
       {load && <Loader />}
