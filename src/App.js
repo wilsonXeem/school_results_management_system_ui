@@ -31,6 +31,7 @@ import Professionals from "./pages/Admin/Professionals";
 import ProfessionalsSessions from "./pages/Admin/ProfessionalsSessions";
 import OtherProfessionalsSessions from "./pages/Admin/ProfessionalsSessions/OtherProfessionalsSessions";
 import Finalists from "./pages/Admin/Finalists";
+import DuplicateStudents from "./pages/Admin/DuplicateStudents";
 import AdminLayout from "./components/AdminLayout";
 
 import Student from "./pages/Student";
@@ -191,6 +192,11 @@ function App() {
             path="/admin/ofc"
             exact
             element={withAdminLayout(<Finalists />)}
+          />
+          <Route
+            path="/duplicate-students"
+            exact
+            element={withAdminLayout(<DuplicateStudents />)}
           />
 
           {/* <Route path="/" exact element={<TableExtractor/>}/> */}

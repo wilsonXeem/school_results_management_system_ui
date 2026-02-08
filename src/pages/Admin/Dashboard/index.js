@@ -99,6 +99,12 @@ function AdminDashboard() {
           >
             Correct Semester Levels
           </button>
+          <button
+            className="dash_btn ghost"
+            onClick={() => navigate("/duplicate-students")}
+          >
+            Manage Duplicate Students
+          </button>
         </div>
       </div>
       <div className="admin_dashboard_stats">
