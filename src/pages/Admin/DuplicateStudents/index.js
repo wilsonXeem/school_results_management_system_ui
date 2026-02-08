@@ -38,12 +38,17 @@ function DuplicateStudents() {
     const keepId = selectedKeep[reg_no];
     if (!keepId) return;
 
+    const duplicateGroup = duplicates.find(d => d.reg_no === reg_no);
+    const deleteIds = duplicateGroup.profiles
+      .filter(p => p._id !== keepId)
+      .map(p => p._id);
+
     setMerging(true);
     try {
       const response = await fetch("http://127.0.0.1:1234/api/class/merge-specific-duplicate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reg_no, keepId }),
+        body: JSON.stringify({ keepId, deleteIds }),
       });
       const json = await response.json();
       if (response.ok) {
