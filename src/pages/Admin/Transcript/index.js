@@ -3,7 +3,6 @@ import unn from "../../../data/unn.png";
 import Table from "./components/Table";
 import { useParams } from "react-router-dom";
 import { ValueContext } from "../../../Context";
-import professionals from "../../../data/professionals";
 
 import generatePDF from "react-to-pdf";
 
@@ -22,32 +21,11 @@ function AdminTranscript() {
       .then((res) => res.json())
       .then((json) => {
         setStudent(json);
+        setOverallUnits(Number(json?.overall_units) || 0);
+        setOverallGp(Number(json?.overall_gp) || 0);
       })
       .catch((err) => console.log(err));
   }, []);
-
-  useEffect(() => {
-    fetch(`http://127.0.0.1:1234/api/student/results/semester/${_id}`)
-      .then((res) => res.json())
-      .then((json) => {
-        if (!Array.isArray(json)) return;
-        const currentLevel = Number(level);
-        let units = 0;
-        let gp = 0;
-        json
-          .filter((semester) => Number(semester.level) <= currentLevel)
-          .forEach((semester) => {
-            semester?.courses?.forEach((course) => {
-              units += Number(course.unit_load) || 0;
-              gp +=
-                (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
-            });
-          });
-        setOverallUnits(units);
-        setOverallGp(gp);
-      })
-      .catch((err) => console.log(err));
-  }, [_id, level]);
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -207,6 +185,8 @@ function AdminTranscript() {
             transcriptType={transcriptType}
             overall_units={overallUnits}
             overall_gp={overallGp}
+            session_cgpa={student.session_cgpa}
+            overall_cgpa={student.cgpa}
             show={
               student.first_external?.length > 0 ||
               student.second_external?.length > 0

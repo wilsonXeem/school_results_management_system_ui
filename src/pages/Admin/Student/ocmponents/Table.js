@@ -1,6 +1,9 @@
 import React, { useMemo } from "react";
 
-function Table({ courses }) {
+function Table({
+  courses,
+  semester_gpa,
+}) {
   const { total_units, total_gp, gradeLabels } = useMemo(() => {
     let total_units = 0, total_gp = 0;
     const gradeLabels = ["F", "E", "D", "C", "B", "A"];
@@ -19,6 +22,13 @@ function Table({ courses }) {
     const label = gradeLabels[grade];
     return grade === 0 ? <b style={{ color: "red" }}>{label}</b> : <b>{label}</b>;
   }, [gradeLabels]);
+
+  const normalizedSemesterGpa = useMemo(() => {
+    const val = Number(semester_gpa);
+    if (Number.isFinite(val)) return val;
+    return total_units > 0 ? Number(total_gp / total_units) : 0;
+  }, [semester_gpa, total_units, total_gp]);
+
   return (
     <div className="table">
       <table>
@@ -63,15 +73,17 @@ function Table({ courses }) {
           textTransform: "uppercase",
           width: "100%",
           display: "flex",
-          flexDirection: "row-reverse",
+          justifyContent: "flex-end",
+          gap: "1rem",
+          flexWrap: "wrap",
         }}
       >
         <div
           className="total_grade"
           style={{ display: "flex", alignItems: "center", marginRight:"1rem" }}
         >
-          <p style={{ marginRight: "0.3rem" }}>cummulative grade point:</p>
-          <h3>{total_units > 0 ? Number(total_gp / total_units).toFixed(2) : "0.00"}</h3>
+          <p style={{ marginRight: "0.3rem" }}>semester grade point:</p>
+          <h3>{normalizedSemesterGpa.toFixed(2)}</h3>
         </div>
       </div>
     </div>

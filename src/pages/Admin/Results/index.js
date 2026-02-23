@@ -64,6 +64,11 @@ function Results() {
     if (!students?.length) return students;
 
     const sorted = [...students];
+    const toNumber = (value) => {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? numeric : 0;
+    };
+
     if (sortMode === "none") {
       sorted.sort((a, b) =>
         String(a.fullname || "").localeCompare(String(b.fullname || ""), "en", {
@@ -71,22 +76,11 @@ function Results() {
         })
       );
     } else if (sortMode === "semester_gpa") {
-      sorted.sort((a, b) => {
-        const calc = (student) => {
-          let totalUnits = 0;
-          let totalGp = 0;
-          (student?.courses || []).forEach((course) => {
-            totalUnits += Number(course.unit_load) || 0;
-            totalGp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
-          });
-          return totalUnits > 0 ? totalGp / totalUnits : 0;
-        };
-        return calc(b) - calc(a);
-      });
+      sorted.sort((a, b) => toNumber(b.gpa) - toNumber(a.gpa));
     } else if (sortMode === "session_gpa") {
-      sorted.sort((a, b) => (b.session_gpa || 0) - (a.session_gpa || 0));
+      sorted.sort((a, b) => toNumber(b.session_gpa) - toNumber(a.session_gpa));
     } else if (sortMode === "cgpa") {
-      sorted.sort((a, b) => (b.cgpa || 0) - (a.cgpa || 0));
+      sorted.sort((a, b) => toNumber(b.cgpa) - toNumber(a.cgpa));
     }
     return sorted;
   }, [students, sortMode]);

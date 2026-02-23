@@ -5,6 +5,7 @@ import Table from "./components/Table";
 import { useParams } from "react-router-dom";
 import { ValueContext } from "../../../Context";
 import professionals from "../../../data/professionals";
+import external from "../../../data/external";
 
 import generatePDF from "react-to-pdf";
 
@@ -27,15 +28,17 @@ function Transcript() {
     socket.emit("student", { _id });
   }, []);
 
+  const isApprovedCourse = (courseCode = "") => {
+    const code = String(courseCode).toLowerCase().trim();
+    return code in professionals || code in external;
+  };
+
   socket.on("student", (res) => {
     setStudent(res.student);
-    setSession(
-      res.student.total_semesters[res.student.total_semesters.length - 1]
-        .session
-    );
-    setLevel(
-      res.student.total_semesters[res.student.total_semesters.length - 1].level
-    );
+    const latestSemester =
+      res.student.total_semesters[res.student.total_semesters.length - 1];
+    setSession(latestSemester.session);
+    setLevel(latestSemester.level);
     setFirst_semester(
       res.student.total_semesters[
         res.student.total_semesters.length - 1
@@ -62,13 +65,17 @@ function Transcript() {
 
     let units = 0;
     let gp = 0;
-    const currentLevel = Number(level);
+    const currentLevel = Number(latestSemester.level);
     res.student.total_semesters
       .filter((semester) => Number(semester.level) <= currentLevel)
       .forEach((semester) => {
       semester?.courses?.forEach((course) => {
-        units += Number(course.unit_load) || 0;
-        gp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
+        if (!isApprovedCourse(course?.course_code)) return;
+        const unitLoad = Number(course.unit_load);
+        const grade = Number(course.grade);
+        if (!Number.isFinite(unitLoad) || unitLoad <= 0) return;
+        units += unitLoad;
+        gp += unitLoad * (Number.isFinite(grade) ? grade : 0);
       });
     });
     setOverallUnits(units);

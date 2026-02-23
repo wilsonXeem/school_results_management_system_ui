@@ -325,7 +325,10 @@ function AdminStudentDashboard() {
             </p>
           </div>
           {semester?.courses?.length > 0 ? (
-            <Table courses={semester.courses} />
+            <Table
+              courses={semester.courses}
+              semester_gpa={semester.gpa}
+            />
           ) : (
             <div style={{ textAlign: "center", padding: "2rem" }}>
               <p>No courses found for this semester.</p>

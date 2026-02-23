@@ -23,6 +23,8 @@ function Table({
   transcriptType,
   overall_units,
   overall_gp,
+  session_cgpa,
+  overall_cgpa,
 }) {
   const { total_units, total_gp, gradeLabels } = useMemo(() => {
     let total_units = 0, total_gp = 0;
@@ -50,6 +52,20 @@ function Table({
     const label = gradeLabels[grade];
     return grade === 0 ? <b style={{ color: "red" }}>{label}</b> : <b>{label}</b>;
   }, [gradeLabels]);
+
+  const sessionGradePoint = useMemo(() => {
+    const value = Number(session_cgpa);
+    if (Number.isFinite(value)) return value;
+    return total_units > 0 ? Number(total_gp / total_units) : 0;
+  }, [session_cgpa, total_gp, total_units]);
+
+  const overallGradePoint = useMemo(() => {
+    if (Number(overall_units) > 0) {
+      return Number(overall_gp) / Number(overall_units);
+    }
+    const fallback = Number(overall_cgpa);
+    return Number.isFinite(fallback) ? fallback : 0;
+  }, [overall_units, overall_gp, overall_cgpa]);
 
   return (
     <div class="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
@@ -448,7 +464,9 @@ function Table({
           textTransform: "uppercase",
           width: "100%",
           display: "flex",
-          flexDirection: "row-reverse",
+          justifyContent: "flex-end",
+          gap: "1rem",
+          flexWrap: "wrap",
         }}
       >
         <div
@@ -456,18 +474,19 @@ function Table({
           style={{ display: "flex", alignItems: "center", marginRight: "1rem" }}
         >
           <p style={{ marginRight: "0.3rem" }}>
-            {Number(level) === 600 ? "cummulative grade point" : "grade point"}:
+            {Number(level) === 600 ? "grade point:" : "session grade point:"}
           </p>
-          <h3>
-            {Number(level) === 600
-              ? overall_units > 0
-                ? Number(overall_gp / overall_units).toFixed(2)
-                : "0.00"
-              : total_units > 0
-              ? Number(total_gp / total_units).toFixed(2)
-              : "0.00"}
-          </h3>
+          <h3>{Number(sessionGradePoint).toFixed(2)}</h3>
         </div>
+        {Number(level) === 600 && (
+          <div
+            className="total_grade"
+            style={{ display: "flex", alignItems: "center", marginRight: "1rem" }}
+          >
+            <p style={{ marginRight: "0.3rem" }}>cgpa:</p>
+            <h3>{Number(overallGradePoint).toFixed(2)}</h3>
+          </div>
+        )}
       </div>
     </div>
   );

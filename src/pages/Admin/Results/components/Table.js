@@ -57,15 +57,9 @@ function Table({ students }) {
 
   const gradeLabels = useMemo(() => ["F", "E", "D", "C", "B", "A"], []);
 
-  const calculateGpa = useCallback((courses = []) => {
-    let totalUnits = 0;
-    let totalGp = 0;
-    courses.forEach((course) => {
-      totalUnits += Number(course.unit_load) || 0;
-      totalGp += (Number(course.unit_load) || 0) * (Number(course.grade) || 0);
-    });
-    const gpa = totalUnits > 0 ? totalGp / totalUnits : 0;
-    return { totalUnits, totalGp, gpa };
+  const parseNumber = useCallback((value) => {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : null;
   }, []);
   
   const handleStudentClick = useCallback((studentId) => {
@@ -95,7 +89,12 @@ function Table({ students }) {
           </tr>
         </thead>
         <tbody>
-          {studentList.map((student, i) => (
+          {studentList.map((student, i) => {
+            const semesterGpa = parseNumber(student.gpa);
+            const sessionGpa = parseNumber(student.session_gpa);
+            const overallCgpa = parseNumber(student.cgpa);
+
+            return (
             <tr key={student._id}>
               <td className="center">{i + 1}</td>
               <td
@@ -123,7 +122,17 @@ function Table({ students }) {
                         <span style={{ width: "50%" }}>
                           {Number(course.total).toFixed(0)}
                         </span>
-                        <span style={{ fontWeight: "bold", width: "50%" }}>
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            width: "50%",
+                            color:
+                              gradeLabels[course.grade] === "F" ||
+                              Number(course.grade) === 0
+                                ? "red"
+                                : "black",
+                          }}
+                        >
                           {gradeLabels[course.grade]}
                         </span>
                       </div>
@@ -134,7 +143,7 @@ function Table({ students }) {
                 );
               })}
               <td className="center" style={{ fontWeight: "bold" }}>
-                {calculateGpa(student.courses).gpa.toFixed(2)}
+                {semesterGpa !== null ? semesterGpa.toFixed(2) : "--"}
               </td>
               {semester === "2" && (
                 <>
@@ -142,22 +151,23 @@ function Table({ students }) {
                     className="center"
                     style={{
                       fontWeight: "bold",
-                      color: (student?.session_gpa ?? calculateGpa(student.courses).gpa) < 2.5 ? "red" : "black",
+                      color:
+                        sessionGpa !== null && sessionGpa < 2.5 ? "red" : "black",
                     }}
                   >
-                    {(student?.session_gpa ?? calculateGpa(student.courses).gpa).toFixed(2)}
+                    {sessionGpa !== null ? sessionGpa.toFixed(2) : "--"}
                   </td>
                   <td className="center" style={{ fontWeight: "bold" }}>
-                    {student.cgpa?.toFixed(2)}
+                    {overallCgpa !== null ? overallCgpa.toFixed(2) : "--"}
                   </td>
                 </>
               )}
             </tr>
-          ))}
+          )})}
         </tbody>
       </table>
     </>
-  ), [uploadedCourses, handleStudentClick, gradeLabels, semester]);
+  ), [uploadedCourses, handleStudentClick, gradeLabels, semester, parseNumber]);
 
   return (
     <div className="tabl" id="myTable">
@@ -206,7 +216,11 @@ function Table({ students }) {
                         <span
                           style={{
                             fontWeight: "bold",
-                            color: course.grade === 0 ? "red" : "black",
+                            color:
+                              gradeLabels[course.grade] === "F" ||
+                              Number(course.grade) === 0
+                                ? "red"
+                                : "black",
                           }}
                         >
                           {gradeLabels[course.grade]}
