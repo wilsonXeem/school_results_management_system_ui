@@ -7,7 +7,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ScienceIcon from "@mui/icons-material/Science";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import AssignmentLateIcon from "@mui/icons-material/AssignmentLate";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PeopleIcon from "@mui/icons-material/People";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
@@ -22,7 +22,7 @@ const navItems = [
   { label: "Probation Lists", to: "/admin/faculty/probation/sessions", icon: WarningAmberIcon },
   { label: "Error Students", to: "/admin/faculty/error/students/sessions", icon: ReportProblemIcon },
   { label: "Professionals", to: "/admin/professionals/sessions", icon: PeopleIcon },
-  { label: "Finalists", to: "/admin/finalists", icon: WorkspacePremiumIcon },
+  { label: "Outstanding Failed Courses", to: "/admin/ofc", icon: AssignmentLateIcon },
   { label: "Top Students", to: "/admin/topstudents", icon: EmojiEventsIcon },
 ];
 
