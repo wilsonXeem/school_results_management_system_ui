@@ -34,22 +34,350 @@
   text-transform: uppercase;
 }
 
-.tabl table {
-  width: 100%;
-}
-
-.tabl table th{
-  background-color: black;
-  color: white;
-  padding: 0.1rem 0.3rem;
-  text-transform: uppercase;
-}
-
-
 .left{
   text-align: left;
 }
 
 .center{
   text-align: center;
+}
+
+.results_table_root {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.results_table_block {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+  padding: 0;
+  min-width: 0;
+}
+
+.results_table_block_plain {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.results_section_title {
+  margin: 0 0 0.7rem;
+  padding: 0 0.2rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.results_table_scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.results_table_scroll_main {
+  overflow-x: auto;
+}
+
+.results_main_table,
+.results_external_table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.results_main_table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+.results_external_table {
+  min-width: 760px;
+}
+
+.results_main_table th,
+.results_external_table th {
+  background: #0f172a;
+  color: #ffffff;
+  text-align: center;
+  padding: 0.42rem 0.5rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+}
+
+.results_main_table td,
+.results_external_table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.42rem 0.5rem;
+  vertical-align: top;
+  text-align: center;
+}
+
+.results_main_table th,
+.results_main_table td {
+  padding: 0.28rem 0.16rem;
+  font-size: 0.76rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.results_main_table th {
+  letter-spacing: 0.02em;
+}
+
+.results_main_table th.results_course_col,
+.results_main_table td.results_course_col {
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  white-space: nowrap;
+}
+
+.results_main_table th.results_col_sn,
+.results_main_table td.results_col_sn {
+  padding-left: 0.05rem;
+  padding-right: 0.05rem;
+  white-space: nowrap;
+}
+
+.results_main_table th.results_col_gpa,
+.results_main_table td.results_col_gpa {
+  padding-left: 0.08rem;
+  padding-right: 0.08rem;
+  white-space: nowrap;
+}
+
+.results_main_table th.results_col_sgpa,
+.results_main_table td.results_col_sgpa,
+.results_main_table th.results_col_ogpa,
+.results_main_table td.results_col_ogpa {
+  padding-left: 0.08rem;
+  padding-right: 0.08rem;
+  white-space: nowrap;
+}
+
+.results_main_table th.results_col_reg,
+.results_main_table td.results_col_reg {
+  padding-left: 0.08rem;
+  padding-right: 0.08rem;
+  white-space: nowrap;
+}
+
+.results_main_table th.results_col_name,
+.results_main_table td.results_col_name {
+  padding-left: 0.42rem;
+  text-align: left;
+}
+
+.results_main_table tbody tr:nth-child(even),
+.results_external_table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.results_clickable_cell {
+  cursor: pointer;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.results_clickable_cell:hover {
+  text-decoration: underline;
+}
+
+.results_name_cell {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: left;
+}
+
+.results_reg_cell {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.results_course_cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.results_course_total {
+  font-weight: 600;
+}
+
+.results_course_grade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-align: center;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 0.05rem 0.36rem;
+  font-size: 0.74rem;
+  line-height: 1.1;
+  background: #e2e8f0;
+  min-width: 1.2rem;
+}
+
+.results_course_grade.is_fail {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.results_gpa_cell {
+  font-weight: 700;
+}
+
+.results_gpa_cell.is_low {
+  color: #dc2626;
+}
+
+.results_course_list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.4rem;
+  align-items: flex-start;
+}
+
+.results_course_list_item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.28rem;
+  width: fit-content;
+  max-width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.18rem 0.34rem;
+}
+
+.carryover_table {
+  min-width: 760px;
+  font-size: 0.76rem;
+}
+
+.carryover_table th,
+.carryover_table td {
+  padding: 0.42rem 0.5rem;
+}
+
+.carryover_table th {
+  letter-spacing: 0.03em;
+}
+
+.carry_col_sn {
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+}
+
+.carry_col_name {
+  min-width: 210px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.results_external_table th.carry_col_name,
+.results_external_table td.carry_col_name {
+  text-align: left;
+}
+
+.carry_col_reg {
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+.carry_col_courses {
+  min-width: 280px;
+}
+
+.carry_course_code {
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  font-size: 0.76rem;
+}
+
+.carry_course_total {
+  text-align: center;
+  min-width: 1.6rem;
+  font-size: 0.76rem;
+}
+
+.carry_course_grade {
+  /* Keep legacy class for compatibility with existing markup */
+  font-size: 0.74rem;
+}
+
+.carry_course_grade.is_fail {
+  /* Fail state is handled by .results_course_grade.is_fail */
+}
+
+@media print {
+  .tabl {
+    padding: 0;
+  }
+
+  .results_table_block {
+    border: none;
+    box-shadow: none;
+  }
+
+  .results_table_scroll,
+  .results_table_scroll_main {
+    overflow: visible !important;
+  }
+
+  .results_main_table,
+  .results_external_table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    font-size: 0.55rem !important;
+  }
+
+  .results_main_table th,
+  .results_main_table td,
+  .results_external_table th,
+  .results_external_table td {
+    padding: 0.1rem 0.08rem !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word;
+  }
+
+  .results_main_table th.results_col_name,
+  .results_main_table td.results_col_name {
+    padding-left: 0.14rem !important;
+  }
+
+  .results_main_table th.results_col_sn,
+  .results_main_table td.results_col_sn {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding-left: 0.05rem !important;
+    padding-right: 0.05rem !important;
+    white-space: nowrap !important;
+  }
+
+  .results_course_cell {
+    gap: 0.02rem;
+  }
+
+  .results_course_list_item {
+    gap: 0.35rem;
+  }
 }

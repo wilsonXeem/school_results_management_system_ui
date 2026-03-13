@@ -185,10 +185,6 @@ function AdminTranscript() {
             overall_gp={overallGp}
             session_cgpa={student.session_cgpa}
             overall_cgpa={student.cgpa}
-            show={
-              student.first_external?.length > 0 ||
-              student.second_external?.length > 0
-            }
           />
           {/* <GPtable
             generatePDF={generatePDF}

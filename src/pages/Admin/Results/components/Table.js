@@ -67,109 +67,104 @@ function Table({ students }) {
   
   // Reusable table renderer for complete & incomplete students
   const renderResultTable = useCallback((studentList, title, showHeading = true) => (
-    <>
+    <section className={`results_table_block ${showHeading ? "results_table_block_plain" : ""}`}>
       {showHeading && (
-        <h3 style={{ marginLeft: "1rem", marginTop: "2rem" }}>{title}</h3>
+        <h3 className="results_section_title">{title}</h3>
       )}
-      <table>
-        <thead>
-          <tr>
-            <th className="center">S/N</th>
-            <th style={{ textAlign: "left" }}>Names</th>
-            <th>Reg. No</th>
-            {uploadedCourses.map((code) => (
-              <th key={code} className="center">
-                {code}
-              </th>
-            ))}
-            <th className="center">GPA</th>
-            {semester === "2" && <th className="center">Session CGPA</th>}
-            {semester === "2" && <th className="center">Overall CGPA</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {studentList.map((student, i) => {
-            const semesterGpa = parseNumber(student.gpa);
-            const sessionGpa = parseNumber(student.session_gpa);
-            const overallCgpa = parseNumber(student.cgpa);
-
-            return (
-            <tr key={student._id}>
-              <td className="center">{i + 1}</td>
-              <td
-                onClick={() => handleStudentClick(student.student_id)}
-                style={{ textAlign: "left", cursor: "pointer" }}
-              >
-                {student.fullname}
-              </td>
-              <td
-                onClick={() => handleStudentClick(student.student_id)}
-                style={{ cursor: "pointer" }}
-              >
-                {student.reg_no}
-              </td>
-              {uploadedCourses.map((code) => {
-                const course = student.courses.find(
-                  (c) => c.course_code === code
-                );
-                return (
-                  <td key={code} style={{ textAlign: "center" }}>
-                    {course ? (
-                      <div
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <span style={{ width: "50%" }}>
-                          {Number(course.total).toFixed(0)}
-                        </span>
-                        <span
-                          style={{
-                            fontWeight: "bold",
-                            width: "50%",
-                            color:
-                              gradeLabels[course.grade] === "F" ||
-                              Number(course.grade) === 0
-                                ? "red"
-                                : "black",
-                          }}
-                        >
-                          {gradeLabels[course.grade]}
-                        </span>
-                      </div>
-                    ) : (
-                      "" // Leave blank if no result uploaded
-                    )}
-                  </td>
-                );
-              })}
-              <td className="center" style={{ fontWeight: "bold" }}>
-                {semesterGpa !== null ? semesterGpa.toFixed(2) : "--"}
-              </td>
-              {semester === "2" && (
-                <>
-                  <td
-                    className="center"
-                    style={{
-                      fontWeight: "bold",
-                      color:
-                        sessionGpa !== null && sessionGpa < 2.5 ? "red" : "black",
-                    }}
-                  >
-                    {sessionGpa !== null ? sessionGpa.toFixed(2) : "--"}
-                  </td>
-                  <td className="center" style={{ fontWeight: "bold" }}>
-                    {overallCgpa !== null ? overallCgpa.toFixed(2) : "--"}
-                  </td>
-                </>
-              )}
+      <div className="results_table_scroll results_table_scroll_main">
+        <table className="results_main_table">
+          <thead>
+            <tr>
+              <th className="center results_col_sn">S/N</th>
+              <th className="left results_col_name">Names</th>
+              <th className="results_col_reg">Reg. No</th>
+              {uploadedCourses.map((code) => (
+                <th key={code} className="center results_course_col">
+                  {code}
+                </th>
+              ))}
+              <th className="center results_col_gpa">GPA</th>
+              {semester === "2" && <th className="center results_col_sgpa">Session CGPA</th>}
+              {semester === "2" && <th className="center results_col_ogpa">Overall CGPA</th>}
             </tr>
-          )})}
-        </tbody>
-      </table>
-    </>
+          </thead>
+          <tbody>
+            {studentList.map((student, i) => {
+              const semesterGpa = parseNumber(student.gpa);
+              const sessionGpa = parseNumber(student.session_gpa);
+              const overallCgpa = parseNumber(student.cgpa);
+
+              return (
+                <tr key={student.student_id || student.reg_no || i}>
+                  <td className="center results_col_sn">{i + 1}</td>
+                  <td
+                    onClick={() => handleStudentClick(student.student_id)}
+                    className="results_clickable_cell results_name_cell results_col_name"
+                  >
+                    {student.fullname}
+                  </td>
+                  <td
+                    onClick={() => handleStudentClick(student.student_id)}
+                    className="results_clickable_cell results_reg_cell results_col_reg"
+                  >
+                    {student.reg_no}
+                  </td>
+                  {uploadedCourses.map((code) => {
+                    const course = student.courses.find(
+                      (c) => c.course_code === code
+                    );
+                    const gradeText = course ? gradeLabels[course.grade] : "";
+                    const isFail = gradeText === "F" || Number(course?.grade) === 0;
+
+                    return (
+                      <td key={code} className="center results_course_col">
+                        {course ? (
+                          <div className="results_course_cell">
+                            <span className="results_course_total">
+                              {Number(course.total).toFixed(0)}
+                            </span>
+                            <span
+                              className={`results_course_grade ${
+                                isFail ? "is_fail" : ""
+                              }`}
+                            >
+                              {gradeText}
+                            </span>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </td>
+                    );
+                  })}
+                  <td className="center results_gpa_cell results_col_gpa">
+                    {semesterGpa !== null ? semesterGpa.toFixed(2) : "--"}
+                  </td>
+                  {semester === "2" && (
+                    <>
+                      <td
+                        className={`center results_gpa_cell ${
+                          sessionGpa !== null && sessionGpa < 2.5 ? "is_low" : ""
+                        } results_col_sgpa`}
+                      >
+                        {sessionGpa !== null ? sessionGpa.toFixed(2) : "--"}
+                      </td>
+                      <td className="center results_gpa_cell results_col_ogpa">
+                        {overallCgpa !== null ? overallCgpa.toFixed(2) : "--"}
+                      </td>
+                    </>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
   ), [uploadedCourses, handleStudentClick, gradeLabels, semester, parseNumber]);
 
   return (
-    <div className="tabl" id="myTable">
+    <div className="tabl results_table_root" id="myTable">
       {/* COMPLETE STUDENTS (no heading) */}
       {renderResultTable(complete_students, "", false)}
 
@@ -179,59 +174,56 @@ function Table({ students }) {
 
       {/* CARRYOVER STUDENTS */}
       {externals.length > 0 && (
-        <div>
-          <h3 className="page_break" style={{ marginLeft: "1rem" }}>
+        <section className="results_table_block results_table_block_plain">
+          <h3 className="page_break results_section_title">
             Carryover Courses Results
           </h3>
-          <table id="myTable">
-            <thead>
-              <tr>
-                <th className="center">S/N</th>
-                <th>Names</th>
-                <th>Reg. No</th>
-                <th>Courses</th>
-              </tr>
-            </thead>
-            <tbody>
-              {externals.map(({ _id, fullname, reg_no, courses }, i) => (
-                <tr key={_id}>
-                  <td className="center">{i + 1}</td>
-                  <td>{fullname}</td>
-                  <td>{reg_no}</td>
-                  <td>
-                    {courses.map((course) => (
-                      <div
-                        key={course.course_code}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem",
-                        }}
-                      >
-                        <span>{course.course_code}</span>
-                        <span style={{ fontWeight: "bold" }}>
-                          {Number(course.total).toFixed()}
-                        </span>
-                        <span
-                          style={{
-                            fontWeight: "bold",
-                            color:
-                              gradeLabels[course.grade] === "F" ||
-                              Number(course.grade) === 0
-                                ? "red"
-                                : "black",
-                          }}
-                        >
-                          {gradeLabels[course.grade]}
-                        </span>
-                      </div>
-                    ))}
-                  </td>
+          <div className="results_table_scroll">
+            <table className="results_external_table carryover_table">
+              <thead>
+                <tr>
+                  <th className="center carry_col_sn">S/N</th>
+                  <th className="carry_col_name">Names</th>
+                  <th className="carry_col_reg">Reg. No</th>
+                  <th className="carry_col_courses">Courses</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {externals.map(({ _id, fullname, reg_no, courses }, i) => (
+                  <tr key={_id || reg_no || i}>
+                    <td className="center carry_col_sn">{i + 1}</td>
+                    <td className="results_name_cell carry_col_name">{fullname}</td>
+                    <td className="results_reg_cell carry_col_reg">{reg_no}</td>
+                    <td className="carry_col_courses">
+                      <div className="results_course_list">
+                        {courses.map((course) => {
+                          const gradeText = gradeLabels[course.grade];
+                          const isFail =
+                            gradeText === "F" || Number(course.grade) === 0;
+                          return (
+                            <div key={course.course_code} className="results_course_list_item">
+                              <span className="carry_course_code">{course.course_code}</span>
+                              <span className="results_course_total carry_course_total">
+                                {Number(course.total).toFixed()}
+                              </span>
+                              <span
+                                className={`results_course_grade carry_course_grade ${
+                                  isFail ? "is_fail" : ""
+                                }`}
+                              >
+                                {gradeText}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       )}
     </div>
   );

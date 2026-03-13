@@ -1,22 +1,54 @@
 import React, { useMemo } from "react";
+import professionals from "../../../../data/professionals";
+
+const isProfessionalCourse = (courseCode = "") => {
+  const code = String(courseCode).toLowerCase().trim();
+  return Object.prototype.hasOwnProperty.call(professionals, code);
+};
 
 function Table({
   courses,
   semester_gpa,
+  total_units,
+  total_gp,
 }) {
-  const { total_units, total_gp, gradeLabels } = useMemo(() => {
-    let total_units = 0, total_gp = 0;
+  const { computedUnits, computedGp, gradeLabels, professionalCourses, nonPharmacyCourses } = useMemo(() => {
+    let computedUnits = 0;
+    let computedGp = 0;
     const gradeLabels = ["F", "E", "D", "C", "B", "A"];
+    const professionalCourses = [];
+    const nonPharmacyCourses = [];
     
     if (courses?.length > 0) {
       courses.forEach((course) => {
-        total_units += course.unit_load;
-        total_gp += course.unit_load * course.grade;
+        if (isProfessionalCourse(course?.course_code)) {
+          professionalCourses.push(course);
+        } else {
+          nonPharmacyCourses.push(course);
+        }
+
+        const unit = Number(course?.unit_load);
+        const grade = Number(course?.grade);
+        if (!Number.isFinite(unit) || unit <= 0) return;
+        const safeGrade = Number.isFinite(grade) ? grade : 0;
+
+        computedUnits += unit;
+        computedGp += unit * safeGrade;
       });
     }
     
-    return { total_units, total_gp, gradeLabels };
+    return { computedUnits, computedGp, gradeLabels, professionalCourses, nonPharmacyCourses };
   }, [courses]);
+
+  const normalizedTotalUnits = useMemo(() => {
+    const value = Number(total_units);
+    return Number.isFinite(value) && value >= 0 ? value : computedUnits;
+  }, [total_units, computedUnits]);
+
+  const normalizedTotalGp = useMemo(() => {
+    const value = Number(total_gp);
+    return Number.isFinite(value) && value >= 0 ? value : computedGp;
+  }, [total_gp, computedGp]);
   
   const renderGrade = useMemo(() => (grade) => {
     const label = gradeLabels[grade];
@@ -26,8 +58,10 @@ function Table({
   const normalizedSemesterGpa = useMemo(() => {
     const val = Number(semester_gpa);
     if (Number.isFinite(val)) return val;
-    return total_units > 0 ? Number(total_gp / total_units) : 0;
-  }, [semester_gpa, total_units, total_gp]);
+    return normalizedTotalUnits > 0
+      ? Number(normalizedTotalGp / normalizedTotalUnits)
+      : 0;
+  }, [semester_gpa, normalizedTotalUnits, normalizedTotalGp]);
 
   return (
     <div className="table">
@@ -44,10 +78,36 @@ function Table({
           </tr>
         </thead>
         <tbody>
-          {courses?.length > 0 &&
-            courses.map((course, i) => (
-              <tr key={course.course_code || i}>
+          {professionalCourses.map((course, i) => (
+              <tr key={course.course_code || `pro-${i}`}>
                 <td className="center">{i + 1}</td>
+                <td>{course.course_code}</td>
+                <td>{course.course_title}</td>
+                <td>{course.unit_load}</td>
+                <td>{Number(course.total).toFixed(0)}</td>
+                <td>{renderGrade(course.grade)}</td>
+                <td>{course.grade * course.unit_load}</td>
+              </tr>
+            ))}
+          {nonPharmacyCourses.length > 0 && (
+            <tr>
+              <th
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  color: "black",
+                  padding: "0.3rem",
+                  fontSize: "0.9rem",
+                  fontStyle: "italic",
+                }}
+                colSpan={7}
+              >
+                Non-Pharmacy Courses
+              </th>
+            </tr>
+          )}
+          {nonPharmacyCourses.map((course, i) => (
+              <tr key={course.course_code || i}>
+                <td className="center">{professionalCourses.length + i + 1}</td>
                 <td>{course.course_code}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
@@ -61,11 +121,11 @@ function Table({
       <div className="totals">
         <div>
           <p>total grade points:</p>
-          <h3>{total_gp}</h3>
+          <h3>{normalizedTotalGp}</h3>
         </div>
         <div>
           <p>Total units:</p>
-          <h3>{total_units}</h3>
+          <h3>{normalizedTotalUnits}</h3>
         </div>
       </div>
       <div

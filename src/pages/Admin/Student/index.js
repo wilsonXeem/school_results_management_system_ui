@@ -283,11 +283,9 @@ function AdminStudentDashboard() {
         </div>
         <div className="student_dashboard_body">
           <div className="student_dashboard_body_details">
-            {transcriptType !== "university" && (
-              <p>
-                Name: <b>{semester?.student_id?.fullname || "N/A"}</b>
-              </p>
-            )}
+            <p>
+              Name: <b>{semester?.student_id?.fullname || "N/A"}</b>
+            </p>
             <p>
               Reg. No: <b>{semester?.student_id?.reg_no || "N/A"}</b>
             </p>
@@ -326,7 +324,9 @@ function AdminStudentDashboard() {
           {semester?.courses?.length > 0 ? (
             <Table
               courses={semester.courses}
-              semester_gpa={semester.gpa}
+              semester_gpa={semester.semester_gpa ?? semester.gpa}
+              total_units={semester.total_units}
+              total_gp={semester.total_gp}
             />
           ) : (
             <div style={{ textAlign: "center", padding: "2rem" }}>

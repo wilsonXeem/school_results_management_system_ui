@@ -50,6 +50,20 @@ function Table({
     return grade === 0 ? <b style={{ color: "red" }}>{label}</b> : <b>{label}</b>;
   }, [gradeLabels]);
 
+  const hasAnySessionCourses = useMemo(() => {
+    return (
+      (first_semester?.length || 0) +
+        (second_semester?.length || 0) +
+        (first_external?.length || 0) +
+        (second_external?.length || 0) >
+      0
+    );
+  }, [first_semester, second_semester, first_external, second_external]);
+
+  const hasNonPharmacyCourses = useMemo(() => {
+    return (first_external?.length || 0) + (second_external?.length || 0) > 0;
+  }, [first_external, second_external]);
+
   return (
     <div className="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
       {/* Special handling for 100 level - show all courses in one table */}
@@ -114,7 +128,7 @@ function Table({
       )}
       
       {/* Regular handling for other levels */}
-      {Number(level) !== 100 && (
+      {Number(level) !== 100 && hasAnySessionCourses && (
         <table>
           <tr>
             <th className="center">s/n</th>
@@ -296,7 +310,7 @@ function Table({
       )}
 
       {/* Separate non-pharmacy table only for 600 level */}
-      {Number(level) === 600 && (first_external?.length > 0 || second_external?.length > 0) && (
+      {Number(level) === 600 && hasNonPharmacyCourses && (
         <div>
           <p style={{ paddingLeft: "1rem", fontWeight: "bold" }}>
             {transcriptType === "university"

@@ -9,6 +9,7 @@ import useExcelParser from "./components/useExcelParser";
 import { ValueContext } from "../../../Context";
 import Loader from "../../../components/Loader";
 import { API_BASE_URL } from "../../../config/api";
+import "./level.css";
 
 // Cache for API responses
 const dataCache = new Map();
@@ -21,7 +22,13 @@ function Level() {
   const { data, parseExcel } = useExcelParser();
   const { setAlert } = useContext(ValueContext);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedExternalCourse, setSelectedExternalCourse] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedExternalFileName, setSelectedExternalFileName] = useState("");
   const [students, setStudents] = useState([]);
+  const [skipReport, setSkipReport] = useState(null);
+  const [uploadSummary, setUploadSummary] = useState(null);
+  const [isRegisterCollapsed, setIsRegisterCollapsed] = useState(false);
   const [error, setError] = useState(null);
   const abortControllerRef = useRef(null);
   const lastFetchRef = useRef(null);
@@ -119,9 +126,14 @@ function Level() {
     fetchStudents();
   }, [fetchStudents]);
 
-  const handleFileUpload = useCallback((e) => {
+  const handleFileUpload = useCallback((e, type = "main") => {
     const file = e.target.files[0];
     if (file) {
+      if (type === "external") {
+        setSelectedExternalFileName(file.name);
+      } else {
+        setSelectedFileName(file.name);
+      }
       parseExcel(file);
     }
   }, [parseExcel]);
@@ -132,6 +144,8 @@ function Level() {
       return;
     }
     
+    setSkipReport(null);
+    setUploadSummary(null);
     setLoad(true);
     setError(null);
     
@@ -161,15 +175,43 @@ function Level() {
       
       const cacheKey = `${class_id}-${semester}-${level}-${session}`;
       dataCache.delete(cacheKey);
+      const skipped = Number(json?.summary?.skipped || 0);
+      const skippedDetails = Array.isArray(json?.summary?.skipped_details)
+        ? json.summary.skipped_details
+        : [];
+      const processed = Number(json?.summary?.processed || 0);
+      const total = Number(json?.summary?.total_rows || data.length || 0);
+      const successMessage = `Registered ${processed}/${total} students successfully.`;
       
-      if (Number(json?.summary?.skipped) > 0) {
+      if (skipped > 0) {
+        setSkipReport({
+          type: "Course Registration",
+          total,
+          processed,
+          skipped,
+          skippedDetails,
+        });
+        const warningLines = [
+          `${skipped} student row(s) were skipped. See details below.`,
+          ...(Array.isArray(json?.summary?.warnings) ? json.summary.warnings : []),
+        ];
+        setUploadSummary({
+          success: successMessage,
+          warnings: warningLines,
+        });
         setAlert(
           true,
-          `Registered ${json.summary.processed}/${json.summary.total_rows}. Skipped ${json.summary.skipped}.`,
-          "error"
+          successMessage,
+          "success"
         );
       } else {
-        setAlert(true, "All students registered successfully!", "success");
+        setSkipReport(null);
+        const warningLines = Array.isArray(json?.summary?.warnings) ? json.summary.warnings : [];
+        setUploadSummary({
+          success: successMessage,
+          warnings: warningLines,
+        });
+        setAlert(true, successMessage, "success");
       }
       setSelectedCourse("");
     } catch (err) {
@@ -182,11 +224,13 @@ function Level() {
   }, [selectedCourse, data, level, semester, session, class_id, setAlert, current_semester]);
 
   const handle_external_course = useCallback(async () => {
-    if (!selectedCourse || !data?.length) {
+    if (!selectedExternalCourse || !data?.length) {
       setAlert(true, "Please select a course and upload student data", "error");
       return;
     }
     
+    setSkipReport(null);
+    setUploadSummary(null);
     setLoad(true);
     setError(null);
     
@@ -196,9 +240,9 @@ function Level() {
         body: JSON.stringify({
           students: data,
           level,
-          course_title: external_courses[selectedCourse],
-          course_code: selectedCourse,
-          unit_load: external_units[selectedCourse],
+          course_title: external_courses[selectedExternalCourse],
+          course_code: selectedExternalCourse,
+          unit_load: external_units[selectedExternalCourse],
           semester,
           session,
           class_id,
@@ -216,17 +260,45 @@ function Level() {
       
       const cacheKey = `${class_id}-${semester}-${level}-${session}`;
       dataCache.delete(cacheKey);
+      const skipped = Number(json?.summary?.skipped || 0);
+      const skippedDetails = Array.isArray(json?.summary?.skipped_details)
+        ? json.summary.skipped_details
+        : [];
+      const processed = Number(json?.summary?.processed || 0);
+      const total = Number(json?.summary?.total_rows || data.length || 0);
+      const successMessage = `Registered ${processed}/${total} external course rows successfully.`;
       
-      if (Number(json?.summary?.skipped) > 0) {
+      if (skipped > 0) {
+        setSkipReport({
+          type: "External Course Registration",
+          total,
+          processed,
+          skipped,
+          skippedDetails,
+        });
+        const warningLines = [
+          `${skipped} student row(s) were skipped. See details below.`,
+          ...(Array.isArray(json?.summary?.warnings) ? json.summary.warnings : []),
+        ];
+        setUploadSummary({
+          success: successMessage,
+          warnings: warningLines,
+        });
         setAlert(
           true,
-          `Registered ${json.summary.processed}/${json.summary.total_rows}. Skipped ${json.summary.skipped}.`,
-          "error"
+          successMessage,
+          "success"
         );
       } else {
-        setAlert(true, "External course registered successfully!", "success");
+        setSkipReport(null);
+        const warningLines = Array.isArray(json?.summary?.warnings) ? json.summary.warnings : [];
+        setUploadSummary({
+          success: successMessage,
+          warnings: warningLines,
+        });
+        setAlert(true, successMessage, "success");
       }
-      setSelectedCourse("");
+      setSelectedExternalCourse("");
       setShow(false);
     } catch (err) {
       console.error('Failed to register external course:', err);
@@ -235,15 +307,17 @@ function Level() {
     } finally {
       setLoad(false);
     }
-  }, [selectedCourse, data, level, semester, session, class_id, setAlert]);
+  }, [selectedExternalCourse, data, level, semester, session, class_id, setAlert]);
+
+  const semesterLabel = semester === "1" ? "First Semester" : "Second Semester";
 
   if (error) {
     return (
-      <div className="current_level" style={{ textAlign: "center", padding: "2rem" }}>
-        <div className="error-message" style={{ color: "red" }}>
+      <div className="level_page">
+        <div className="level_state_card">
           <h3>Error loading level data</h3>
           <p>{error}</p>
-          <button onClick={() => fetchStudents(true)} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+          <button className="level_btn level_btn_primary" onClick={() => fetchStudents(true)}>
             Retry
           </button>
         </div>
@@ -252,67 +326,242 @@ function Level() {
   }
 
   return (
-    <div className="current_level">
-      <div className="header">
-        <h2>
-          {level} Level:{" "}
-          {semester === "1" ? "first semester" : "second semester"}
-        </h2>
-      </div>
-      <div className="course_reg_upload">
-        <p>Register course:</p>
-        <select
-          name="course"
-          value={selectedCourse}
-          onChange={(e) => setSelectedCourse(e.target.value)}
-        >
-          <option value="">Select course</option>
-          {course_codes.map((course, key) => (
-            <option key={course} value={course}>
-              <span>{course}</span> {course_titles[key]}
-            </option>
-          ))}
-        </select>
-        <p style={{ textAlign: "center" }}>
-          Unit load: <b>{units[selectedCourse] || 'N/A'}</b>
-        </p>
-        <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-        <button onClick={handle_course_reg} disabled={!selectedCourse || !data?.length || load}>
-          Upload
-        </button>
-        <button onClick={() => setShow(true)} disabled={load}>Add external course</button>
-      </div>
-      {show && (
-        <div className="external_course_reg_upload">
-          <p>Register external course:</p>
-          <select
-            name="course"
-            value={selectedCourse}
-            onChange={(e) => setSelectedCourse(e.target.value)}
-          >
-            <option value="">Select course</option>
-            {external_codes.map((course, key) => (
-              <option key={course} value={course}>
-                <span>{course}</span> {external_titles[key]}{" "}
-                {external_units[course]}
-              </option>
-            ))}
-          </select>
-          <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-          <button onClick={handle_external_course} disabled={!selectedCourse || !data?.length || load}>
-            Register
-          </button>
-          <button
-            style={{ backgroundColor: "red" }}
-            onClick={() => { setShow(false); setSelectedCourse(""); }}
-            disabled={load}
-          >
-            Cancel
-          </button>
+    <div className="level_page">
+      <section className="level_page_header">
+        <div>
+          <p className="level_kicker">Course Registration</p>
+          <h2>{level} Level • {semesterLabel}</h2>
         </div>
-      )}
+        <div className="level_meta">
+          <span className="level_chip">
+            <b>Session:</b> {session}
+          </span>
+          <span className="level_chip">
+            <b>Uploaded rows:</b> {data?.length || 0}
+          </span>
+        </div>
+      </section>
+
+      <section className={`level_form_grid ${show ? "two_column" : ""}`}>
+        <article className="level_form_card">
+          <div className="level_form_card_head">
+            <div>
+              <h3>Register Course</h3>
+              <p className="level_hint">
+                Upload an Excel sheet and register students for the selected course.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="level_collapse_toggle"
+              onClick={() => setIsRegisterCollapsed((prev) => !prev)}
+              aria-expanded={!isRegisterCollapsed}
+              aria-controls="register-course-body"
+            >
+              {isRegisterCollapsed ? "Expand" : "Collapse"}
+            </button>
+          </div>
+
+          {!isRegisterCollapsed ? (
+            <div id="register-course-body">
+              <div className="level_form_fields">
+                <label className="level_field">
+                  <span>Course</span>
+                  <select
+                    name="course"
+                    value={selectedCourse}
+                    onChange={(e) => setSelectedCourse(e.target.value)}
+                  >
+                    <option value="">Select course</option>
+                    {course_codes.map((course, key) => (
+                      <option key={course} value={course}>
+                        <span>{course}</span> {course_titles[key]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="level_field">
+                  <span>Unit load</span>
+                  <input type="text" value={units[selectedCourse] || "N/A"} readOnly />
+                </label>
+
+                <label className="level_field">
+                  <span>Excel file</span>
+                  <div className="level_upload_control">
+                    <input
+                      id="level-file-upload-main"
+                      className="level_hidden_file_input"
+                      type="file"
+                      accept=".xlsx, .xls"
+                      onChange={(e) => handleFileUpload(e, "main")}
+                    />
+                    <label htmlFor="level-file-upload-main" className="level_upload_trigger">
+                      Choose File
+                    </label>
+                    <span className="level_upload_filename">
+                      {selectedFileName || "No file selected"}
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              <p className="level_file_label">
+                {selectedFileName ? `Selected file: ${selectedFileName}` : "No file selected"}
+              </p>
+
+              <div className="level_actions_row">
+                <button
+                  className="level_btn level_btn_primary"
+                  onClick={handle_course_reg}
+                  disabled={!selectedCourse || !data?.length || load}
+                >
+                  Upload
+                </button>
+                <button
+                  className="level_btn level_btn_secondary"
+                  onClick={() => setShow((prev) => !prev)}
+                  disabled={load}
+                >
+                  {show ? "Hide External Course" : "Add External Course"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="level_collapsed_text">Register course section is collapsed.</p>
+          )}
+        </article>
+
+        {show && (
+          <article className="level_form_card level_form_card_alt">
+            <h3>Register External Course</h3>
+            <p className="level_hint">
+              Use the same uploaded sheet and map scores to an external course.
+            </p>
+
+            <div className="level_form_fields">
+              <label className="level_field">
+                <span>External course</span>
+                <select
+                  name="external_course"
+                  value={selectedExternalCourse}
+                  onChange={(e) => setSelectedExternalCourse(e.target.value)}
+                >
+                  <option value="">Select course</option>
+                  {external_codes.map((course, key) => (
+                    <option key={course} value={course}>
+                      <span>{course}</span> {external_titles[key]} {external_units[course]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="level_field">
+                <span>Unit load</span>
+                <input type="text" value={external_units[selectedExternalCourse] || "N/A"} readOnly />
+              </label>
+
+              <label className="level_field">
+                <span>Excel file</span>
+                <div className="level_upload_control">
+                  <input
+                    id="level-file-upload-external"
+                    className="level_hidden_file_input"
+                    type="file"
+                    accept=".xlsx, .xls"
+                    onChange={(e) => handleFileUpload(e, "external")}
+                  />
+                  <label htmlFor="level-file-upload-external" className="level_upload_trigger">
+                    Choose File
+                  </label>
+                  <span className="level_upload_filename">
+                    {selectedExternalFileName || "No file selected"}
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <p className="level_file_label">
+              {selectedExternalFileName
+                ? `Selected file: ${selectedExternalFileName}`
+                : "No file selected"}
+            </p>
+
+            <div className="level_actions_row">
+              <button
+                className="level_btn level_btn_primary"
+                onClick={handle_external_course}
+                disabled={!selectedExternalCourse || !data?.length || load}
+              >
+                Register
+              </button>
+              <button
+                className="level_btn level_btn_danger"
+                onClick={() => {
+                  setShow(false);
+                  setSelectedExternalCourse("");
+                }}
+                disabled={load}
+              >
+                Cancel
+              </button>
+            </div>
+          </article>
+        )}
+      </section>
+
       {load && <Loader />}
-      {students.length > 0 && <Table students={students} />}
+
+      {uploadSummary && (
+        <section className="level_upload_summary_card">
+          <p className="level_upload_summary_success">{uploadSummary.success}</p>
+          {Array.isArray(uploadSummary.warnings) &&
+            uploadSummary.warnings.length > 0 &&
+            uploadSummary.warnings.map((warning, index) => (
+              <p key={`${warning}-${index}`} className="level_upload_summary_warning">
+                {warning}
+              </p>
+            ))}
+        </section>
+      )}
+
+      {skipReport && skipReport.skipped > 0 && (
+        <section className="level_skip_card">
+          <div className="level_skip_head">
+            <h3>Skipped Reg Numbers</h3>
+            <p>
+              {skipReport.type} • {skipReport.processed}/{skipReport.total} processed •{" "}
+              {skipReport.skipped} skipped
+            </p>
+          </div>
+          <div className="level_skip_grid">
+            {skipReport.skippedDetails.map((item, index) => (
+              <div key={`${item?.reg_no || "unknown"}-${index}`} className="level_skip_item">
+                <span className="level_skip_reg">{item?.reg_no || "N/A"}</span>
+                <span className="level_skip_reason">{item?.reason || "Skipped"}</span>
+              </div>
+            ))}
+          </div>
+          {skipReport.skipped > skipReport.skippedDetails.length && (
+            <p className="level_skip_more">
+              Showing {skipReport.skippedDetails.length} of {skipReport.skipped} skipped rows.
+            </p>
+          )}
+        </section>
+      )}
+
+      <section className="level_table_card">
+        <div className="level_table_head">
+          <h3>Registered Students</h3>
+          <span>{students.length} students</span>
+        </div>
+        {students.length > 0 && <Table students={students} />}
+        {!load && students.length === 0 && (
+          <div className="level_empty_state">
+            <p>No students found for this class and semester.</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

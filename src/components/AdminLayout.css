@@ -2,6 +2,8 @@
   display: flex;
   min-height: 100vh;
   background: #f7f9fc;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .admin_sidenav {
@@ -13,9 +15,12 @@
   align-items: center;
   padding: 1rem 0.5rem;
   gap: 1rem;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
-  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
   box-shadow: 4px 0 16px rgba(15, 23, 42, 0.2);
 }
 
@@ -91,6 +96,14 @@
   min-width: 0;
   padding: 1.5rem;
   box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin-left: 72px;
+}
+
+.admin_layout_content > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media print {
@@ -118,8 +131,14 @@
     flex-direction: row;
     justify-content: center;
     position: sticky;
+    left: auto;
     top: 0;
     z-index: 10;
+    overflow: visible;
+  }
+
+  .admin_layout_content {
+    margin-left: 0;
   }
 
   .sidenav_links {
