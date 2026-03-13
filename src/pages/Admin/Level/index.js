@@ -151,23 +151,29 @@ function Level() {
           "Content-Type": "application/json",
         },
       });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
       const json = await response.json();
+      if (!response.ok) {
+        throw new Error(json?.message || `HTTP error! status: ${response.status}`);
+      }
       setStudents(json.students || []);
       
       const cacheKey = `${class_id}-${semester}-${level}-${session}`;
       dataCache.delete(cacheKey);
       
-      setAlert(true, "All students registered successfully!", "success");
+      if (Number(json?.summary?.skipped) > 0) {
+        setAlert(
+          true,
+          `Registered ${json.summary.processed}/${json.summary.total_rows}. Skipped ${json.summary.skipped}.`,
+          "error"
+        );
+      } else {
+        setAlert(true, "All students registered successfully!", "success");
+      }
       setSelectedCourse("");
     } catch (err) {
       console.error('Failed to register course:', err);
       setError(err.message);
-      setAlert(true, "Failed to register students", "error");
+      setAlert(true, err.message || "Failed to register students", "error");
     } finally {
       setLoad(false);
     }
@@ -200,24 +206,30 @@ function Level() {
           "Content-Type": "application/json",
         },
       });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
       const json = await response.json();
+      if (!response.ok) {
+        throw new Error(json?.message || `HTTP error! status: ${response.status}`);
+      }
       setStudents(json.students || []);
       
       const cacheKey = `${class_id}-${semester}-${level}-${session}`;
       dataCache.delete(cacheKey);
       
-      setAlert(true, "External course registered successfully!", "success");
+      if (Number(json?.summary?.skipped) > 0) {
+        setAlert(
+          true,
+          `Registered ${json.summary.processed}/${json.summary.total_rows}. Skipped ${json.summary.skipped}.`,
+          "error"
+        );
+      } else {
+        setAlert(true, "External course registered successfully!", "success");
+      }
       setSelectedCourse("");
       setShow(false);
     } catch (err) {
       console.error('Failed to register external course:', err);
       setError(err.message);
-      setAlert(true, "Failed to register external course", "error");
+      setAlert(true, err.message || "Failed to register external course", "error");
     } finally {
       setLoad(false);
     }
