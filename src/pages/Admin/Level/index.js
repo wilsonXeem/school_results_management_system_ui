@@ -23,6 +23,10 @@ function Level() {
   const { setAlert } = useContext(ValueContext);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedExternalCourse, setSelectedExternalCourse] = useState("");
+  const [isManualExternal, setIsManualExternal] = useState(false);
+  const [manualExternalCode, setManualExternalCode] = useState("");
+  const [manualExternalTitle, setManualExternalTitle] = useState("");
+  const [manualExternalUnitLoad, setManualExternalUnitLoad] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [selectedExternalFileName, setSelectedExternalFileName] = useState("");
   const [students, setStudents] = useState([]);
@@ -41,6 +45,15 @@ function Level() {
   const course_titles = Object.values(current_semester);
   const external_codes = Object.keys(external_courses);
   const external_titles = Object.values(external_courses);
+  const resolvedExternalCode = isManualExternal
+    ? manualExternalCode
+    : selectedExternalCourse;
+  const resolvedExternalTitle = isManualExternal
+    ? manualExternalTitle
+    : external_courses[selectedExternalCourse];
+  const resolvedExternalUnitLoad = isManualExternal
+    ? Number(manualExternalUnitLoad)
+    : Number(external_units[selectedExternalCourse]);
 
   const fetchStudents = useCallback(async (forceRefresh = false) => {
     if (!class_id || !semester || !level || !session) return;
@@ -224,8 +237,25 @@ function Level() {
   }, [selectedCourse, data, level, semester, session, class_id, setAlert, current_semester]);
 
   const handle_external_course = useCallback(async () => {
-    if (!selectedExternalCourse || !data?.length) {
-      setAlert(true, "Please select a course and upload student data", "error");
+    const manualCode = String(manualExternalCode || "").trim();
+    const manualTitle = String(manualExternalTitle || "").trim();
+    const manualUnit = Number(manualExternalUnitLoad);
+    const selectedUnit = Number(external_units[selectedExternalCourse]);
+    const courseCode = isManualExternal ? manualCode : selectedExternalCourse;
+    const courseTitle = isManualExternal ? manualTitle : external_courses[selectedExternalCourse];
+    const unitLoad = isManualExternal ? manualUnit : selectedUnit;
+
+    if (!data?.length) {
+      setAlert(true, "Please upload student data first", "error");
+      return;
+    }
+
+    if (!courseCode || !courseTitle || !Number.isFinite(unitLoad) || unitLoad <= 0) {
+      setAlert(
+        true,
+        "Please provide a valid external course code, title, and unit load",
+        "error"
+      );
       return;
     }
     
@@ -240,9 +270,9 @@ function Level() {
         body: JSON.stringify({
           students: data,
           level,
-          course_title: external_courses[selectedExternalCourse],
-          course_code: selectedExternalCourse,
-          unit_load: external_units[selectedExternalCourse],
+          course_title: courseTitle,
+          course_code: courseCode,
+          unit_load: unitLoad,
           semester,
           session,
           class_id,
@@ -299,6 +329,9 @@ function Level() {
         setAlert(true, successMessage, "success");
       }
       setSelectedExternalCourse("");
+      setManualExternalCode("");
+      setManualExternalTitle("");
+      setManualExternalUnitLoad("");
       setShow(false);
     } catch (err) {
       console.error('Failed to register external course:', err);
@@ -307,7 +340,19 @@ function Level() {
     } finally {
       setLoad(false);
     }
-  }, [selectedExternalCourse, data, level, semester, session, class_id, setAlert]);
+  }, [
+    selectedExternalCourse,
+    data,
+    level,
+    semester,
+    session,
+    class_id,
+    setAlert,
+    isManualExternal,
+    manualExternalCode,
+    manualExternalTitle,
+    manualExternalUnitLoad,
+  ]);
 
   const semesterLabel = semester === "1" ? "First Semester" : "Second Semester";
 
@@ -439,26 +484,81 @@ function Level() {
               Use the same uploaded sheet and map scores to an external course.
             </p>
 
+            <div className="level_actions_row" style={{ marginTop: 0 }}>
+              <button
+                type="button"
+                className={`level_btn ${!isManualExternal ? "level_btn_primary" : "level_btn_secondary"}`}
+                onClick={() => setIsManualExternal(false)}
+                disabled={load}
+              >
+                Select Existing
+              </button>
+              <button
+                type="button"
+                className={`level_btn ${isManualExternal ? "level_btn_primary" : "level_btn_secondary"}`}
+                onClick={() => setIsManualExternal(true)}
+                disabled={load}
+              >
+                Add Manually
+              </button>
+            </div>
+
             <div className="level_form_fields">
-              <label className="level_field">
-                <span>External course</span>
-                <select
-                  name="external_course"
-                  value={selectedExternalCourse}
-                  onChange={(e) => setSelectedExternalCourse(e.target.value)}
-                >
-                  <option value="">Select course</option>
-                  {external_codes.map((course, key) => (
-                    <option key={course} value={course}>
-                      <span>{course}</span> {external_titles[key]} {external_units[course]}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {!isManualExternal ? (
+                <label className="level_field">
+                  <span>External course</span>
+                  <select
+                    name="external_course"
+                    value={selectedExternalCourse}
+                    onChange={(e) => setSelectedExternalCourse(e.target.value)}
+                  >
+                    <option value="">Select course</option>
+                    {external_codes.map((course, key) => (
+                      <option key={course} value={course}>
+                        <span>{course}</span> {external_titles[key]} {external_units[course]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <>
+                  <label className="level_field">
+                    <span>Course code</span>
+                    <input
+                      type="text"
+                      value={manualExternalCode}
+                      onChange={(e) => setManualExternalCode(e.target.value.toUpperCase())}
+                      placeholder="e.g. CHM101"
+                    />
+                  </label>
+
+                  <label className="level_field">
+                    <span>Course title</span>
+                    <input
+                      type="text"
+                      value={manualExternalTitle}
+                      onChange={(e) => setManualExternalTitle(e.target.value)}
+                      placeholder="e.g. External CHM101"
+                    />
+                  </label>
+                </>
+              )}
 
               <label className="level_field">
                 <span>Unit load</span>
-                <input type="text" value={external_units[selectedExternalCourse] || "N/A"} readOnly />
+                <input
+                  type="number"
+                  min="1"
+                  step="0.5"
+                  value={
+                    isManualExternal
+                      ? manualExternalUnitLoad
+                      : external_units[selectedExternalCourse] || ""
+                  }
+                  readOnly={!isManualExternal}
+                  onChange={(e) => setManualExternalUnitLoad(e.target.value)}
+                  placeholder={isManualExternal ? "e.g. 2" : "N/A"}
+                />
               </label>
 
               <label className="level_field">
@@ -491,7 +591,14 @@ function Level() {
               <button
                 className="level_btn level_btn_primary"
                 onClick={handle_external_course}
-                disabled={!selectedExternalCourse || !data?.length || load}
+                disabled={
+                  !data?.length ||
+                  load ||
+                  !String(resolvedExternalCode || "").trim() ||
+                  !String(resolvedExternalTitle || "").trim() ||
+                  !Number.isFinite(resolvedExternalUnitLoad) ||
+                  resolvedExternalUnitLoad <= 0
+                }
               >
                 Register
               </button>
@@ -500,6 +607,10 @@ function Level() {
                 onClick={() => {
                   setShow(false);
                   setSelectedExternalCourse("");
+                  setIsManualExternal(false);
+                  setManualExternalCode("");
+                  setManualExternalTitle("");
+                  setManualExternalUnitLoad("");
                 }}
                 disabled={load}
               >
