@@ -18,6 +18,7 @@ module.exports = {
   hed364: "external HED364",
   hed101: "external HED101",
   hed265: "external HED265",
+  hed356: "external HED356",
   hed365: "external HED365",
   hed366: "external HED366",
   hed372: "external HED372",
