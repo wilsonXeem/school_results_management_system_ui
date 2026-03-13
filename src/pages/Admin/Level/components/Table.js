@@ -12,7 +12,6 @@ function Table({ students = [] }) {
     const sortedStudents = [...students].sort((a, b) => a.fullname.localeCompare(b.fullname));
     const current_semester = levels[level]?.[semester] || {};
     const course_codes = Object.keys(current_semester);
-    const courseCodesSet = new Set(course_codes);
     
     const externalCourses = [];
     sortedStudents.forEach((student) => {

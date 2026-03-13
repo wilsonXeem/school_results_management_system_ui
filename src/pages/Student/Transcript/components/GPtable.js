@@ -2,7 +2,7 @@ import React from "react";
 
 function GPtable() {
   return (
-    <div class="gp_tab">
+    <div className="gp_tab">
       <div className="gp">
         <div>
           <p>Current GPA:</p>

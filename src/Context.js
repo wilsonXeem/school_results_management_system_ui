@@ -3,8 +3,9 @@ import React, { Component, createContext } from "react";
 import { jwtDecode } from "jwt-decode";
 
 import io from "socket.io-client";
+import { API_BASE_URL } from "./config/api";
 
-const socket = io("http://127.0.0.1:1234");
+const socket = io(API_BASE_URL);
 
 export const ValueContext = createContext();
 const token = localStorage.getItem("token");

@@ -20,24 +20,30 @@ function StudentDashboard() {
   const publicKey = "pk_test_12bc757a4ffd6f94184fcbb079b67bdf1885a312";
 
   useEffect(() => {
+    if (!socket) return;
     socket.emit("student", { _id });
-  }, []);
+    const handleStudent = (res) => {
+      setStudent(res.student);
+      setEmail(res.student.email);
+      setTotal_semesters(res.student.total_semesters);
+      setSession(
+        res.student.total_semesters[res.student.total_semesters.length - 1]
+      );
+      setCourses(
+        res.student.total_semesters[res.student.total_semesters.length - 1]
+          .courses
+      );
+      setGpa(
+        res.student.total_semesters[res.student.total_semesters.length - 1].gpa
+      );
+    };
 
-  socket.on("student", (res) => {
-    setStudent(res.student);
-    setEmail(res.student.email);
-    setTotal_semesters(res.student.total_semesters);
-    setSession(
-      res.student.total_semesters[res.student.total_semesters.length - 1]
-    );
-    setCourses(
-      res.student.total_semesters[res.student.total_semesters.length - 1]
-        .courses
-    );
-    setGpa(
-      res.student.total_semesters[res.student.total_semesters.length - 1].gpa
-    );
-  });
+    socket.on("student", handleStudent);
+
+    return () => {
+      socket.off("student", handleStudent);
+    };
+  }, [_id, socket]);
 
   const componentProps = {
     email,
@@ -54,15 +60,15 @@ function StudentDashboard() {
   };
 
   return (
-    <div class="student_dashboard">
-      <div class="student_dashboard_head">
-        <div class="passport">
-          <div class="passport_img">
+    <div className="student_dashboard">
+      <div className="student_dashboard_head">
+        <div className="passport">
+          <div className="passport_img">
             <img src={unn} alt="" />
           </div>
         </div>
-        <div class="dashboard_header">
-          <div class="student_dashboard_head_title">
+        <div className="dashboard_header">
+          <div className="student_dashboard_head_title">
             <h2>Faculty of Pharmaceutical Sciences</h2>
             <p
               style={{
@@ -77,14 +83,14 @@ function StudentDashboard() {
             <i>(This is not a transcript)</i>
           </div>
         </div>
-        <div class="passport">
-          <div class="passport_img">
+        <div className="passport">
+          <div className="passport_img">
             <img src={student.profile_image} alt="" />
           </div>
         </div>
       </div>
-      <div class="student_dashboard_body">
-        <div class="student_dashboard_body_details">
+      <div className="student_dashboard_body">
+        <div className="student_dashboard_body_details">
           <p>
             Name: <b>{student.fullname}</b>
           </p>

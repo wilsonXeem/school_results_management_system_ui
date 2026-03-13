@@ -3,6 +3,7 @@ import "./index.css";
 import unn from "../../data/unn.png";
 import { ValueContext } from "../../Context";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
 
 function Admin() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function Admin() {
   const [otp, setotp] = useState("");
 
   const request_otp = () => {
-    fetch("http://127.0.0.1:1234/api/auth/admin/passkey")
+    fetch(`${API_BASE_URL}/api/auth/admin/passkey`)
       .then((res) => res.json())
       .then((json) => {
         setShow(true);
@@ -21,7 +22,7 @@ function Admin() {
   };
 
   const handle_signin = () => {
-    fetch(`http://127.0.0.1:1234/api/auth/admin/signin/${otp}`, {
+    fetch(`${API_BASE_URL}/api/auth/admin/signin/${otp}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,20 +40,20 @@ function Admin() {
   };
 
   return (
-    <div class="admin_login">
-      <div class="admin_login_logos">
-        <div class="admin_login_logo">
+    <div className="admin_login">
+      <div className="admin_login_logos">
+        <div className="admin_login_logo">
           <img src={unn} alt="unn_logo" />
         </div>
       </div>
-      <div class="admin_login_title">
+      <div className="admin_login_title">
         <h1>Faculty of Pharmaceutical Sciences</h1>
         <h2>University of Nigeria Nsukka</h2>
       </div>
 
       <h2>Admin login</h2>
 
-      <div class="admin_login_form">
+      <div className="admin_login_form">
         <input type="text" value="wilsonzim566@gmail.com" disabled />
         <input
           type="text"

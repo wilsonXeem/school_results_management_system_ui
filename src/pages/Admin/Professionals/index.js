@@ -5,8 +5,7 @@ import Table from "./components/Table";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Header from "../../../components/Header";
 import Loader from "../../../components/Loader";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 function Professionals() {
   const target = useRef();

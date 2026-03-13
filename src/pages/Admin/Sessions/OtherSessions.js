@@ -4,6 +4,7 @@ import Levels from "./components/Levels";
 import PreviousSession from "./components/PreviousSession";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { API_BASE_URL } from "../../../config/api";
 
 function OtherSessions() {
   const { sesion } = useParams();
@@ -16,7 +17,7 @@ function OtherSessions() {
 
   useEffect(() => {
     setLoad(true);
-    fetch("http://127.0.0.1:1234/api/sessions/")
+    fetch(`${API_BASE_URL}/api/sessions/`)
       .then((res) => res.json())
       .then((json) => {
         if (json.success) {
@@ -36,7 +37,7 @@ function OtherSessions() {
   }, [sesion]);
 
   const register_session = () => {
-    fetch("http://127.0.0.1:1234/api/auth/session", {
+    fetch(`${API_BASE_URL}/api/auth/session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +58,7 @@ function OtherSessions() {
         <h2>Course registration</h2>
       </div>
       {load && <Loader />}
-      <div class="current_session">
+      <div className="current_session">
         <p>Current session:</p>
         {current_session.length > 0 && <h2>{current_session[0].session}</h2>}
         <div>
@@ -65,7 +66,7 @@ function OtherSessions() {
         </div>
       </div>
       {show && (
-        <div class="register_session">
+        <div className="register_session">
           <p>Register session:</p>
           <input
             type="text"
@@ -99,7 +100,7 @@ function OtherSessions() {
       <div className="previous_sessions_container">
         <p>Other sessions:</p>
         {other_sessions.length > 0 && (
-          <div class="previous_sessions">
+          <div className="previous_sessions">
             {other_sessions.map((session) => (
               <PreviousSession session={session.session} />
             ))}

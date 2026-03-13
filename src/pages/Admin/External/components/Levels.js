@@ -7,7 +7,7 @@ function Levels({ classes, session }) {
     <div className="levels">
       <p>Classes:</p>
       {classes.map((level, i) => (
-        <div class="level" key={i}>
+        <div className="level" key={i}>
           <h3>{level.level} Level</h3>
           <div>
             <button

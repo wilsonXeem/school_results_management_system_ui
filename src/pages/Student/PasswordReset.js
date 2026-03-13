@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import { ValueContext } from "../../Context";
+import { API_BASE_URL } from "../../config/api";
 
 import unn from "../../data/unn.png";
 
@@ -15,7 +16,7 @@ function PasswordReset() {
   const [code, setCode] = useState("");
 
   const handle_submit = () => {
-    fetch("http://127.0.0.1:1234/api/auth/student/passwordreset", {
+    fetch(`${API_BASE_URL}/api/auth/student/passwordreset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,26 +31,26 @@ function PasswordReset() {
   };
 
   const handle_code = () => {
-    fetch(`http://127.0.0.1:1234/api/auth/student/code/${email}`)
+    fetch(`${API_BASE_URL}/api/auth/student/code/${email}`)
       .then((res) => res.json())
       .then((json) => setAlert(true, json.message, "success"));
   };
 
   return (
-    <div class="admin_login">
-      <div class="admin_login_logos">
-        <div class="admin_login_logo">
+    <div className="admin_login">
+      <div className="admin_login_logos">
+        <div className="admin_login_logo">
           <img src={unn} alt="unn_logo" />
         </div>
       </div>
-      <div class="admin_login_title">
+      <div className="admin_login_title">
         <h1>Faculty of Pharmaceutical Sciences</h1>
         <h2>University of Nigeria Nsukka</h2>
       </div>
 
       <h2>Password reset</h2>
 
-      <div class="admin_login_form">
+      <div className="admin_login_form">
         <div>
           <input
             type="email"

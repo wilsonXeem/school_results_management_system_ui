@@ -1,23 +1,21 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import unn from "../../../data/unn.png";
 import Table from "./components/Table";
 import { useParams } from "react-router-dom";
-import { ValueContext } from "../../../Context";
+import { API_BASE_URL } from "../../../config/api";
 
 import generatePDF from "react-to-pdf";
 
 function AdminTranscript() {
   const target = useRef();
   const { _id, sesion, level } = useParams();
-  const { socket } = useContext(ValueContext);
   const [student, setStudent] = useState({});
-  const [show, setShow] = useState(false);
   const [transcriptType, setTranscriptType] = useState("faculty");
   const [overallUnits, setOverallUnits] = useState(0);
   const [overallGp, setOverallGp] = useState(0);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:1234/api/student/results/session/${_id}/${sesion}`)
+    fetch(`${API_BASE_URL}/api/student/results/session/${_id}/${sesion}`)
       .then((res) => res.json())
       .then((json) => {
         setStudent(json);
@@ -25,7 +23,7 @@ function AdminTranscript() {
         setOverallGp(Number(json?.overall_gp) || 0);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [_id, sesion]);
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -117,19 +115,19 @@ function AdminTranscript() {
           Print
         </button>
       </div>
-      <div class="student_db" id="transcript" ref={target}>
+      <div className="student_db" id="transcript" ref={target}>
         <div className="d_head">
-          <div class="student_dashboard_head">
-            <div class="passport">
-              <div class="passport_img">
+          <div className="student_dashboard_head">
+            <div className="passport">
+              <div className="passport_img">
                 <img src={unn} alt="" />
               </div>
             </div>
-            <div class="dashboard_header">
-              {/* <div class="student_dashboard_header_img">
+            <div className="dashboard_header">
+              {/* <div className="student_dashboard_header_img">
             <img src={unn} alt="" />
           </div> */}
-              <div class="student_dashboard_head_title">
+              <div className="student_dashboard_head_title">
                 {transcriptType === "university" ? (
                   <>
                     <p>University of Nigeria, Nsukka</p>
@@ -150,15 +148,15 @@ function AdminTranscript() {
                 </i>
               </div>
             </div>
-            <div class="passport">
-              <div class="passport_img">
+            <div className="passport">
+              <div className="passport_img">
                 <img src={student.profile_image} alt="" />
               </div>
             </div>
           </div>
         </div>
-        <div class="student_dashboard_bod">
-          <div class="student_dashboard_body_details">
+        <div className="student_dashboard_bod">
+          <div className="student_dashboard_body_details">
               <p>
                 Name of Student: <b>{student.fullname}</b>
               </p>
@@ -198,11 +196,11 @@ function AdminTranscript() {
             options={options}
           /> */}
         </div>
-        <div class="gp_tab">
-          <div class="transcript_btn"></div>
+        <div className="gp_tab">
+          <div className="transcript_btn"></div>
         </div>
         <div
-          class="signature"
+          className="signature"
           style={
             transcriptType === "university" && Number(level) === 600
               ? {
@@ -216,7 +214,7 @@ function AdminTranscript() {
           {transcriptType === "university" ? (
             Number(level) === 600 ? (
               <>
-                <div class="exam_office">
+                <div className="exam_office">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -230,7 +228,7 @@ function AdminTranscript() {
                     Name and Signature of Computing Officer (with Date)
                   </p>
                 </div>
-                <div class="dean">
+                <div className="dean">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -244,7 +242,7 @@ function AdminTranscript() {
                     Name and Signature of Cross-checking Officer (with Date)
                   </p>
                 </div>
-                <div class="exam_office">
+                <div className="exam_office">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -258,7 +256,7 @@ function AdminTranscript() {
                     Name and Signature of Certifying Officer (with Date)
                   </p>
                 </div>
-                <div class="dean">
+                <div className="dean">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -275,7 +273,7 @@ function AdminTranscript() {
               </>
             ) : (
               <>
-                <div class="exam_office">
+                <div className="exam_office">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -289,7 +287,7 @@ function AdminTranscript() {
                     Name and Signature of Computing Officer (with Date)
                   </p>
                 </div>
-                <div class="dean">
+                <div className="dean">
                   <p
                     style={{
                       textTransform: "capitalize",
@@ -307,7 +305,7 @@ function AdminTranscript() {
             )
           ) : (
             <>
-              <div class="exam_office">
+              <div className="exam_office">
                 <p
                   style={{
                     textTransform: "capitalize",
@@ -320,7 +318,7 @@ function AdminTranscript() {
                   Name and Signature of Faculty Officer (with date)
                 </p>
               </div>
-              <div class="dean">
+              <div className="dean">
                 <p
                   style={{
                     textTransform: "capitalize",
@@ -415,8 +413,8 @@ function AdminTranscript() {
         </div>
       </div>
 
-      <div class="gp_tab">
-        <div class="transcript_btn"></div>
+      <div className="gp_tab">
+        <div className="transcript_btn"></div>
         <div></div>
       </div>
     </div>

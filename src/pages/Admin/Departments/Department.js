@@ -23,15 +23,15 @@ function Department() {
   );
 
   return (
-    <div class="department">
-      <div class="header">
+    <div className="department">
+      <div className="header">
         <h2>{courses[code]}</h2>
       </div>
       <div className="current_session">
         <p>Current session: </p>
         <h2>{session}</h2>
       </div>
-      <div class="departmental_courses">
+      <div className="departmental_courses">
         <div>
           <p>First semester:</p>
           {level.map((lev, i) => (

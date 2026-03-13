@@ -4,8 +4,7 @@ import Header from "../../../components/Header";
 import Loader from "../../../components/Loader";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Table from "./components/Table";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 function Finalists() {
   const target = useRef();

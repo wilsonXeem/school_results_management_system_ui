@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import "./StudentManagement.css";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../config/api";
 
 const StudentManagement = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const StudentManagement = () => {
     setStudent({});
     setSemesterResult(null);
     const response = await fetch(
-      `http://127.0.0.1:1234/api/student/${endpoint}`,
+      `${API_BASE_URL}/api/student/${endpoint}`,
       {
         method: method,
         headers: { "Content-Type": "application/json" },
@@ -70,7 +71,7 @@ const StudentManagement = () => {
   const updateCourseTotal = async () => {
     if (!scoreModal.course) return;
     const response = await fetch(
-      "http://127.0.0.1:1234/api/student/update-course-total",
+      `${API_BASE_URL}/api/student/update-course-total`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -15,6 +15,8 @@ import { ValueContext } from "../Context";
 export default function AlertModal() {
   const { alert_show, alert_message, alert_type, resetAlert } =
     useContext(ValueContext);
+  const normalizedAlertType =
+    alert_type === "error" ? "danger" : alert_type;
   const items = [
     { title: "Success", color: "success", icon: <CheckCircleIcon /> },
     { title: "Warning", color: "warning", icon: <WarningIcon /> },
@@ -38,7 +40,7 @@ export default function AlertModal() {
       {alert_show &&
         items.map(
           ({ title, color, icon }) =>
-            alert_type === color && (
+            normalizedAlertType === color && (
               <Alert
                 key={title}
                 sx={{ alignItems: "flex-start" }}

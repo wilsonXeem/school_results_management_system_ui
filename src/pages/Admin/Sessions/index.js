@@ -3,8 +3,7 @@ import "./sessions.css";
 import Levels from "./components/Levels";
 import PreviousSession from "./components/PreviousSession";
 import Loader from "../../../components/Loader";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 // Cache for sessions data
 const sessionsCache = new Map();
@@ -123,7 +122,7 @@ function Sessions() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const json = await response.json();
+      await response.json();
       
       // Clear cache and refresh data
       sessionsCache.clear();

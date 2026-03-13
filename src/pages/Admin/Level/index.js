@@ -8,8 +8,7 @@ import Table from "./components/Table";
 import useExcelParser from "./components/useExcelParser";
 import { ValueContext } from "../../../Context";
 import Loader from "../../../components/Loader";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 // Cache for API responses
 const dataCache = new Map();
@@ -27,7 +26,10 @@ function Level() {
   const abortControllerRef = useRef(null);
   const lastFetchRef = useRef(null);
   
-  const current_semester = levels[level]?.[semester] || {};
+  const current_semester = useMemo(
+    () => levels[level]?.[semester] || {},
+    [level, semester]
+  );
   const course_codes = Object.keys(current_semester);
   const course_titles = Object.values(current_semester);
   const external_codes = Object.keys(external_courses);

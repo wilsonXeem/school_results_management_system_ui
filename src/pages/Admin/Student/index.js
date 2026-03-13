@@ -10,8 +10,7 @@ import unn from "../../../data/unn.png";
 import Table from "./ocmponents/Table";
 import { useParams, useNavigate } from "react-router-dom";
 import generatePDF from "react-to-pdf";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 function AdminStudentDashboard() {
   const target = useRef();

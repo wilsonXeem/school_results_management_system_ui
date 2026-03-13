@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./duplicates.css";
 import Loader from "../../../components/Loader";
+import { API_BASE_URL } from "../../../config/api";
 
 function DuplicateStudents() {
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,7 @@ function DuplicateStudents() {
   const fetchDuplicates = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:1234/api/class/find-duplicates");
+      const response = await fetch(`${API_BASE_URL}/api/class/find-duplicates`);
       const json = await response.json();
       if (response.ok) {
         setDuplicates(json.duplicates || []);
@@ -45,7 +46,7 @@ function DuplicateStudents() {
 
     setMerging(true);
     try {
-      const response = await fetch("http://127.0.0.1:1234/api/class/merge-specific-duplicate", {
+      const response = await fetch(`${API_BASE_URL}/api/class/merge-specific-duplicate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ keepId, deleteIds }),

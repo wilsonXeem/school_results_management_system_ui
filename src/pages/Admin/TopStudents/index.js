@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import "./topstudents.css";
 import Loader from "../../../components/Loader";
 import departments from "../../../data/courses";
+import { API_BASE_URL } from "../../../config/api";
 
 function TopStudents() {
   const [sessions, setSessions] = useState([]);
@@ -47,7 +48,7 @@ function TopStudents() {
     }
     if (current_department) {
       fetch(
-        `http://127.0.0.1:1234/api/class/topstudents/department/${classObj._id}?limit=${limit}`,
+        `${API_BASE_URL}/api/class/topstudents/department/${classObj._id}?limit=${limit}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -72,7 +73,7 @@ function TopStudents() {
     }
 
     fetch(
-      `http://127.0.0.1:1234/api/class/topstudents/${classObj._id}?limit=${limit}`
+      `${API_BASE_URL}/api/class/topstudents/${classObj._id}?limit=${limit}`
     )
       .then((res) => res.json())
       .then((json) => {
@@ -87,7 +88,7 @@ function TopStudents() {
 
   useEffect(() => {
     setLoad(true);
-    fetch("http://127.0.0.1:1234/api/sessions/")
+    fetch(`${API_BASE_URL}/api/sessions/`)
       .then((res) => res.json())
       .then((json) => {
         setSessions(json.sessions);
@@ -163,7 +164,7 @@ function TopStudents() {
                   setCurrent_department("");
                   setLoad(true);
                   fetch(
-                    `http://127.0.0.1:1234/api/class/topstudents/${level._id}?limit=${topLimit}`
+                    `${API_BASE_URL}/api/class/topstudents/${level._id}?limit=${topLimit}`
                   )
                     .then((res) => res.json())
                     .then((json) => {
@@ -202,7 +203,7 @@ function TopStudents() {
                       ? clinicalDeptId
                       : deptId;
                   fetch(
-                    `http://127.0.0.1:1234/api/class/topstudents/department/${classObj._id}?limit=${topLimit}`,
+                    `${API_BASE_URL}/api/class/topstudents/department/${classObj._id}?limit=${topLimit}`,
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },

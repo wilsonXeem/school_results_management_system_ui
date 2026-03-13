@@ -25,62 +25,64 @@ function Transcript() {
   const [overallGp, setOverallGp] = useState(0);
 
   useEffect(() => {
+    if (!socket) return;
     socket.emit("student", { _id });
-  }, []);
-
-  const isApprovedCourse = (courseCode = "") => {
-    const code = String(courseCode).toLowerCase().trim();
-    return code in professionals || code in external;
-  };
-
-  socket.on("student", (res) => {
-    setStudent(res.student);
-    const latestSemester =
-      res.student.total_semesters[res.student.total_semesters.length - 1];
-    setSession(latestSemester.session);
-    setLevel(latestSemester.level);
-    setFirst_semester(
-      res.student.total_semesters[
-        res.student.total_semesters.length - 1
-      ].courses.filter((course) => course.course_code in professionals)
-    );
-    res.student.total_semesters[res.student.total_semesters.length - 2] &&
-      setSecond_semester(
-        res.student.total_semesters[
-          res.student.total_semesters.length - 2
-        ].courses.filter((course) => course.course_code in professionals)
-      );
-    res.student.total_semesters[res.student.total_semesters.length - 1] &&
-      setFirst_external(
+    const handleStudent = (res) => {
+      setStudent(res.student);
+      const latestSemester =
+        res.student.total_semesters[res.student.total_semesters.length - 1];
+      setSession(latestSemester.session);
+      setLevel(latestSemester.level);
+      setFirst_semester(
         res.student.total_semesters[
           res.student.total_semesters.length - 1
-        ].courses.filter((course) => !(course.course_code in professionals))
+        ].courses.filter((course) => course.course_code in professionals)
       );
-    res.student.total_semesters[res.student.total_semesters.length - 2] &&
-      setSecond_external(
-        res.student.total_semesters[
-          res.student.total_semesters.length - 2
-        ].courses.filter((course) => !(course.course_code in professionals))
-      );
+      res.student.total_semesters[res.student.total_semesters.length - 2] &&
+        setSecond_semester(
+          res.student.total_semesters[
+            res.student.total_semesters.length - 2
+          ].courses.filter((course) => course.course_code in professionals)
+        );
+      res.student.total_semesters[res.student.total_semesters.length - 1] &&
+        setFirst_external(
+          res.student.total_semesters[
+            res.student.total_semesters.length - 1
+          ].courses.filter((course) => !(course.course_code in professionals))
+        );
+      res.student.total_semesters[res.student.total_semesters.length - 2] &&
+        setSecond_external(
+          res.student.total_semesters[
+            res.student.total_semesters.length - 2
+          ].courses.filter((course) => !(course.course_code in professionals))
+        );
 
-    let units = 0;
-    let gp = 0;
-    const currentLevel = Number(latestSemester.level);
-    res.student.total_semesters
-      .filter((semester) => Number(semester.level) <= currentLevel)
-      .forEach((semester) => {
-      semester?.courses?.forEach((course) => {
-        if (!isApprovedCourse(course?.course_code)) return;
-        const unitLoad = Number(course.unit_load);
-        const grade = Number(course.grade);
-        if (!Number.isFinite(unitLoad) || unitLoad <= 0) return;
-        units += unitLoad;
-        gp += unitLoad * (Number.isFinite(grade) ? grade : 0);
-      });
-    });
-    setOverallUnits(units);
-    setOverallGp(gp);
-  });
+      let units = 0;
+      let gp = 0;
+      const currentLevel = Number(latestSemester.level);
+      res.student.total_semesters
+        .filter((semester) => Number(semester.level) <= currentLevel)
+        .forEach((semester) => {
+          semester?.courses?.forEach((course) => {
+            const code = String(course?.course_code || "").toLowerCase().trim();
+            if (!(code in professionals || code in external)) return;
+            const unitLoad = Number(course.unit_load);
+            const grade = Number(course.grade);
+            if (!Number.isFinite(unitLoad) || unitLoad <= 0) return;
+            units += unitLoad;
+            gp += unitLoad * (Number.isFinite(grade) ? grade : 0);
+          });
+        });
+      setOverallUnits(units);
+      setOverallGp(gp);
+    };
+
+    socket.on("student", handleStudent);
+
+    return () => {
+      socket.off("student", handleStudent);
+    };
+  }, [_id, socket]);
 
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -139,18 +141,18 @@ function Transcript() {
           </button>
         </div>
       </div>
-      <div class="student_db" id="transcript" ref={target}>
-        <div class="student_dashboard_head">
-          <div class="passport">
-            <div class="passport_img">
+      <div className="student_db" id="transcript" ref={target}>
+        <div className="student_dashboard_head">
+          <div className="passport">
+            <div className="passport_img">
               <img src={unn} alt="" />
             </div>
           </div>
-          <div class="dashboard_header">
-            {/* <div class="student_dashboard_header_img">
+          <div className="dashboard_header">
+            {/* <div className="student_dashboard_header_img">
             <img src={unn} alt="" />
           </div> */}
-            <div class="student_dashboard_head_title">
+            <div className="student_dashboard_head_title">
               {transcriptType === "university" ? (
                 <>
                   <h2>University of Nigeria, Nsukka</h2>
@@ -173,14 +175,14 @@ function Transcript() {
               </i>
             </div>
           </div>
-          <div class="passport">
-            <div class="passport_img">
+          <div className="passport">
+            <div className="passport_img">
               <img src={student.profile_image} alt="" />
             </div>
           </div>
         </div>
-        <div class="student_dashboard_bod">
-          <div class="student_dashboard_body_details">
+        <div className="student_dashboard_bod">
+          <div className="student_dashboard_body_details">
             <p>
               Name of Student: <b>{student.fullname}</b>
             </p>
@@ -214,21 +216,21 @@ function Transcript() {
             options={options}
           /> */}
         </div>
-        <div class="gp_tab">
-          <div class="transcript_btn"></div>
+        <div className="gp_tab">
+          <div className="transcript_btn"></div>
           <div style={{ textTransform: "uppercase" }}>
-            <div class="cummulative_grade">
+            <div className="cummulative_grade">
               <p>cummulative grade point avarage:</p>
               <h3>{student.cgpa}</h3>
             </div>
-            <div class="total_grade">
+            <div className="total_grade">
               <p>cummulative grade points:</p>
               <h3>{student.cgpa}</h3>
             </div>
           </div>
         </div>
-        <div class="signature">
-          <div class="exam_office">
+        <div className="signature">
+          <div className="exam_office">
             <p
               style={{
                 fontSize: "large",
@@ -242,7 +244,7 @@ function Transcript() {
               Name and Signature of Examination Officer (with date)
             </p>
           </div>
-          <div class="dean">
+          <div className="dean">
             <p
               style={{
                 fontSize: "large",
@@ -264,8 +266,8 @@ function Transcript() {
         </div>
       </div>
 
-      <div class="gp_tab">
-        <div class="transcript_btn">
+      <div className="gp_tab">
+        <div className="transcript_btn">
           <button
             onClick={() => generatePDF(target, { filename: "transcript.pdf" })}
           >

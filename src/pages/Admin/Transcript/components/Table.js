@@ -68,7 +68,7 @@ function Table({
   }, [overall_units, overall_gp, overall_cgpa]);
 
   return (
-    <div class="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
+    <div className="table trans" style={{ padding: "0rem", marginTop: "1rem" }}>
       {/* Special handling for 100 level - show all courses in one table */}
       {Number(level) === 100 && (first_external?.length > 0 || second_external?.length > 0) && (
         <table>

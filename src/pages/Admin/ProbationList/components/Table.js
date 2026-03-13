@@ -1,9 +1,8 @@
 import React, { useMemo, useCallback } from "react";
-import levels from "../../../../data/levels";
 import { useParams, useNavigate } from "react-router-dom";
 
 function Table({ students }) {
-  const { level, semester, session } = useParams();
+  const { semester } = useParams();
   const navigate = useNavigate();
   
   const sortedStudents = useMemo(() => {

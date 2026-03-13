@@ -17,7 +17,6 @@ import OtherExternals from "./pages/Admin/External/OtherExternals";
 import OtherCourse from "./pages/Admin/Course/ExternalCourse";
 import AdminStudentDashboard from "./pages/Admin/Student";
 import AdminTranscript from "./pages/Admin/Transcript";
-import SearchStudent from "./pages/Admin/SearchStudent";
 import ProbationSessions from "./pages/Admin/ProbationSessions";
 import OtherProbationSessions from "./pages/Admin/ProbationSessions/OtherProbationSessions";
 import ProbationList from "./pages/Admin/ProbationList";
@@ -40,8 +39,6 @@ import PasswordReset from "./pages/Student/PasswordReset";
 import DetailsUpdate from "./pages/Student/DetailsUpdate";
 import StudentDashboard from "./pages/Student/Dashboard";
 import Transcript from "./pages/Student/Transcript";
-
-import TableExtractor from "./pages/TableExtractor";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 

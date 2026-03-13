@@ -19,7 +19,6 @@ function Table({ students }) {
     const uploadedCourses = course_codes.filter((code) =>
       sortedStudents.some((stud) => stud.courses.some((c) => c.course_code === code))
     );
-    const uploadedCoursesSet = new Set(uploadedCourses);
     
     // Single pass categorization
     const complete_students = [];

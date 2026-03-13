@@ -1,5 +1,6 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { API_BASE_URL } from "../../../config/api";
 
 const ExtractMoe = () => {
   const [students, setStudents] = useState([]);
@@ -31,7 +32,7 @@ const ExtractMoe = () => {
 
   const handleSubmit = async () => {
     const response = await fetch(
-      "http://127.0.0.1:1234/api/student/moe",
+      `${API_BASE_URL}/api/student/moe`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

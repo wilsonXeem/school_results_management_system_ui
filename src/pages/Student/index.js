@@ -3,6 +3,7 @@ import "./index.css";
 import { useNavigate } from "react-router-dom";
 
 import unn from "../../data/unn.png";
+import { API_BASE_URL } from "../../config/api";
 
 function Student() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function Student() {
   const [password, setPassword] = useState("");
 
   const handle_login = () => {
-    fetch("http://127.0.0.1:1234/api/auth/student/login", {
+    fetch(`${API_BASE_URL}/api/auth/student/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,20 +29,20 @@ function Student() {
       );
   };
   return (
-    <div class="admin_login">
-      <div class="admin_login_logos">
-        <div class="admin_login_logo">
+    <div className="admin_login">
+      <div className="admin_login_logos">
+        <div className="admin_login_logo">
           <img src={unn} alt="unn_logo" />
         </div>
       </div>
-      <div class="admin_login_title">
+      <div className="admin_login_title">
         <h1>Faculty of Pharmaceutical Sciences</h1>
         <h2>University of Nigeria Nsukka</h2>
       </div>
 
       <h2>Student Login</h2>
 
-      <div class="admin_login_form">
+      <div className="admin_login_form">
         <input
           type="text"
           placeholder="Reg. No"

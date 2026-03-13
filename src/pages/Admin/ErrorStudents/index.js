@@ -1,31 +1,21 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import "./level.css";
 import Table from "./components/Table";
-import { ValueContext } from "../../../Context";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Header from "../../../components/Header";
 import Loader from "../../../components/Loader";
-
-const sessions = [
-  { session: "2023-2024", prev: "2022-2023" },
-  { session: "2022-2023", prev: "2021-2022" },
-  { session: "2021-2022", prev: "2020-2021" },
-  { session: "2020-2021", prev: "2019-2020" },
-  { session: "2019-2020", prev: "2018-2019" },
-];
+import { API_BASE_URL } from "../../../config/api";
 
 function ErrorStudents() {
   const target = useRef();
-  const { level, semester, session, _id } = useParams();
+  const { level, session, _id } = useParams();
   const [students, setStudents] = useState([]);
-  const [prev_students, setPrev_students] = useState([]);
   const [load, setLoad] = useState(false);
-  const prev_session = sessions.find((sess) => sess.session === session).prev;
 
   useEffect(() => {
     setLoad(true);
-    fetch(`http://127.0.0.1:1234/api/class/error`, {
+    fetch(`${API_BASE_URL}/api/class/error`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,18 +34,18 @@ function ErrorStudents() {
         console.log(error);
         setLoad(false);
       });
-  }, []);
+  }, [_id, level]);
 
   return (
     <>
       <Header />
       <div
-        class="current_level"
+        className="current_level"
         ref={target}
         id="pageContent"
         style={{ textAlign: "center" }}
       >
-        <div class="header">
+        <div className="header">
           <h2>
             {session}: {level} error students list
           </h2>
@@ -63,8 +53,8 @@ function ErrorStudents() {
         {load && <Loader />}
         {students.length > 0 && <Table students={students} />}
       </div>
-      <div class="gp_tab no_print">
-        <div class="transcript_btn">
+      <div className="gp_tab no_print">
+        <div className="transcript_btn">
           <button onClick={() => window.print()}>Print</button>
         </div>
         <div>

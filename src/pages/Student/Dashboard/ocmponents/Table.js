@@ -2,7 +2,7 @@ import React from "react";
 
 function Table({ courses }) {
   return (
-    <div class="table" style={{ marginTop: "1rem" }}>
+    <div className="table" style={{ marginTop: "1rem" }}>
       {/* <p style={{textTransform:"none"}}>Registered courses:</p> */}
       <table>
         <tr>

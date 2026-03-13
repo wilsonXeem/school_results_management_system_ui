@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./temp600threecourseaverage.css";
 import Loader from "../../../components/Loader";
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:1234";
+import { API_BASE_URL } from "../../../config/api";
 
 function Temp600ThreeCourseAverage() {
   const [load, setLoad] = useState(false);

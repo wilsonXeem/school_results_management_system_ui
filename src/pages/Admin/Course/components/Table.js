@@ -1,9 +1,6 @@
 import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Table({ students }) {
-  const navigate = useNavigate();
-  
   const gradeLabels = useMemo(() => ["F", "E", "D", "C", "B", "A"], []);
   
   const renderGrade = useMemo(() => (grade) => {

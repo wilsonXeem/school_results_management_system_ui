@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import courses from "../../../data/courses";
 import levels from "../../../data/levels";
 import external from "../../../data/external";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./external.css";
 import PreviousSession from "./components/PreviousSession";
 import Loader from "../../../components/Loader";
+import { API_BASE_URL } from "../../../config/api";
 
 function External() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function External() {
 
   useEffect(() => {
     setLoad(true);
-    fetch("http://127.0.0.1:1234/api/sessions/")
+    fetch(`${API_BASE_URL}/api/sessions/`)
       .then((res) => res.json())
       .then((json) => {
         console.log(
@@ -49,8 +49,8 @@ function External() {
   }, []);
 
   return (
-    <div class="department">
-      <div class="header">
+    <div className="department">
+      <div className="header">
         <h2>non pharmacy courses</h2>
       </div>
       {load && <Loader />}
@@ -58,7 +58,7 @@ function External() {
         <p>Current session: </p>
         <h2>{current_session.session}</h2>
       </div>
-      <div class="departmental_courses">
+      <div className="departmental_courses">
         <div>
           <p>First semester:</p>
           {level.map((lev, i) => (
@@ -104,7 +104,7 @@ function External() {
           ))}
         </div>
       </div>
-      <div class="other_externals">
+      <div className="other_externals">
         <h4>Other Non-Pharmacy Courses</h4>
         {externals?.length > 0 && (
           <div className="exs">
@@ -127,7 +127,7 @@ function External() {
       <div className="previous_sessions_container">
         <p>Other sessions:</p>
         {other_sessions.length > 0 && (
-          <div class="previous_sessions">
+          <div className="previous_sessions">
             {other_sessions.map((session) => (
               <PreviousSession session={session.session} />
             ))}

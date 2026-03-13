@@ -3,7 +3,7 @@ import { PaystackButton } from "react-paystack";
 
 function GPtable({ cgpa, gpa, componentProps }) {
   return (
-    <div class="gp_table">
+    <div className="gp_table">
       <div>
         <div>
           <p>Current GPA:</p>
@@ -14,7 +14,7 @@ function GPtable({ cgpa, gpa, componentProps }) {
           <h3>{cgpa ? cgpa : 0}</h3>
         </div>
       </div>
-      <div class="transcript_button">
+      <div className="transcript_button">
         <button onClick={() => window.print()}>Print statement</button>
         <PaystackButton {...componentProps} />
       </div>

@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import "./index.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { ValueContext } from "../../Context";
+import { API_BASE_URL } from "../../config/api";
 
 import unn from "../../data/unn.png";
 
@@ -35,7 +36,7 @@ function DetailsUpdate() {
       formData.append("email", email);
       formData.append("password", password);
 
-      fetch(`http://127.0.0.1:1234/api/auth/student/details/update/${_id}`, {
+      fetch(`${API_BASE_URL}/api/auth/student/details/update/${_id}`, {
         method: "POST",
         body: formData,
       })
@@ -45,19 +46,19 @@ function DetailsUpdate() {
   };
 
   const handle_code = () => {
-    fetch(`http://127.0.0.1:1234/api/auth/student/code/${email}`)
+    fetch(`${API_BASE_URL}/api/auth/student/code/${email}`)
       .then((res) => res.json())
       .then((json) => setAlert(true, json.message, "success"));
   };
 
   return (
-    <div class="admin_login">
-      <div class="admin_login_logos">
-        <div class="admin_login_logo">
+    <div className="admin_login">
+      <div className="admin_login_logos">
+        <div className="admin_login_logo">
           <img src={unn} alt="unn_logo" />
         </div>
       </div>
-      <div class="admin_login_title">
+      <div className="admin_login_title">
         <h1>Faculty of Pharmaceutical Sciences</h1>
         <h2>University of Nigeria Nsukka</h2>
       </div>
@@ -65,7 +66,7 @@ function DetailsUpdate() {
       <h2>Student details update</h2>
       <p>Enter your email, upload your passport and change your password</p>
 
-      <div class="admin_login_form">
+      <div className="admin_login_form">
         <div>
           <input
             type="email"

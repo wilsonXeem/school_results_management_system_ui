@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function GPtable({ session, cgpa, id, generatePDF, target }) {
   const navigate = useNavigate();
   return (
-    <div class="gp_table">
+    <div className="gp_table">
       <div>
         <div>
           <p>Semester GPA:</p>
@@ -15,7 +15,7 @@ function GPtable({ session, cgpa, id, generatePDF, target }) {
           <h3>{cgpa}</h3>
         </div>
       </div>
-      <div class="transcript_button">
+      <div className="transcript_button">
         <button
           onClick={() => generatePDF(target, { filename: "statement.pdf" })}
         >

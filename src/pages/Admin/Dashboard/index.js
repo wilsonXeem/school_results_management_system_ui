@@ -3,6 +3,7 @@ import Box from "./components/Box";
 import "./dashboard.css";
 import Loader from "../../../components/Loader";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../config/api";
 
 function AdminDashboard() {
   const [current_session, setCurrent_session] = useState("");
@@ -23,7 +24,7 @@ function AdminDashboard() {
     setCorrectStatus({ type: "", text: "" });
     try {
       const response = await fetch(
-        "http://127.0.0.1:1234/api/student/correct-semester-levels",
+        `${API_BASE_URL}/api/student/correct-semester-levels`,
         {
           method: "POST",
           headers: {
@@ -53,7 +54,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     setLoad(true);
-    fetch("http://127.0.0.1:1234/api/sessions/")
+    fetch(`${API_BASE_URL}/api/sessions/`)
       .then((res) => res.json())
       .then((json) => {
         setSessions(json.sessions);
@@ -62,13 +63,11 @@ function AdminDashboard() {
         );
         setCurrent_session(currentSession?.session || "");
         setTotal_sessions(json.sessions.length);
-        if (!selectedSession && currentSession?.session) {
-          setSelectedSession(currentSession.session);
-        }
+        setSelectedSession((prev) => prev || currentSession?.session || "");
         setLoad(false);
       })
       .catch((err) => console.log(err));
-  }, [selectedSession]);
+  }, []);
 
   return (
     <div className="admin_dashboard">

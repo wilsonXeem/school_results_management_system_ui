@@ -1,22 +1,21 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 // import "./level.css";
 import Table from "./components/Table";
-import { ValueContext } from "../../../Context";
 import ExportToExcel from "../../../components/ExportToExcel";
 import Header from "../../../components/Header";
 import Loader from "../../../components/Loader";
+import { API_BASE_URL } from "../../../config/api";
 
 function ProbationList() {
   const target = useRef();
-  const { level, semester, session, _id } = useParams();
+  const { level, session, _id } = useParams();
   const [students, setStudents] = useState([]);
   const [load, setLoad] = useState(false);
-  const { socket } = useContext(ValueContext);
 
   useEffect(() => {
     setLoad(true);
-    fetch("http://127.0.0.1:1234/api/class/probation", {
+    fetch(`${API_BASE_URL}/api/class/probation`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,18 +35,18 @@ function ProbationList() {
         console.log(err);
         setLoad(false);
       });
-  }, []);
+  }, [_id, level, session]);
 
   return (
     <>
       <Header />
       <div
-        class="current_level"
+        className="current_level"
         ref={target}
         id="pageContent"
         style={{ textAlign: "center" }}
       >
-        <div class="header">
+        <div className="header">
           <h2>
             {session}: {level} Level probation list
           </h2>
@@ -55,8 +54,8 @@ function ProbationList() {
         {load && <Loader />}
         {students.length > 0 && <Table students={students} />}
       </div>
-      <div class="gp_tab no_print">
-        <div class="transcript_btn">
+      <div className="gp_tab no_print">
+        <div className="transcript_btn">
           <button onClick={() => window.print()}>Print</button>
         </div>
         <div>

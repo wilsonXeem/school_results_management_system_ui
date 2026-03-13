@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import courses from "../../../../data/courses";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
@@ -11,9 +11,9 @@ function Courses({session}) {
     <div className="levels">
       <p>Courses:</p>
       {faculty_courses.map((course, i) => (
-        <div class="courses" key={i}>
+        <div className="courses" key={i}>
           <div
-            class="course"
+            className="course"
             onClick={() =>
               navigate(
                 `/admin/faculty/${session}/courses/${course_codes[i]}`
