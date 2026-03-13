@@ -1,10 +1,19 @@
 import React, { useMemo } from "react";
 import professionals from "../../../../data/professionals";
+import external_courses from "../../../../data/external_courses";
 
 const isProfessionalCourse = (courseCode = "") => {
   const code = String(courseCode).toLowerCase().trim();
   return Object.prototype.hasOwnProperty.call(professionals, code);
 };
+
+const isHashedExternalCourse = (courseCode = "") => {
+  const code = String(courseCode).toLowerCase().trim();
+  return Object.prototype.hasOwnProperty.call(external_courses, code) && !code.startsWith("hed");
+};
+
+const getDisplayCourseCode = (courseCode = "") =>
+  isHashedExternalCourse(courseCode) ? `#${courseCode}` : courseCode;
 
 function Table({
   courses,
@@ -30,6 +39,7 @@ function Table({
         const unit = Number(course?.unit_load);
         const grade = Number(course?.grade);
         if (!Number.isFinite(unit) || unit <= 0) return;
+        if (isHashedExternalCourse(course?.course_code)) return;
         const safeGrade = Number.isFinite(grade) ? grade : 0;
 
         computedUnits += unit;
@@ -81,7 +91,7 @@ function Table({
           {professionalCourses.map((course, i) => (
               <tr key={course.course_code || `pro-${i}`}>
                 <td className="center">{i + 1}</td>
-                <td>{course.course_code}</td>
+                <td>{getDisplayCourseCode(course.course_code)}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed(0)}</td>
@@ -108,7 +118,7 @@ function Table({
           {nonPharmacyCourses.map((course, i) => (
               <tr key={course.course_code || i}>
                 <td className="center">{professionalCourses.length + i + 1}</td>
-                <td>{course.course_code}</td>
+                <td>{getDisplayCourseCode(course.course_code)}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{Number(course.total).toFixed(0)}</td>

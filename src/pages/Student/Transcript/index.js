@@ -6,8 +6,23 @@ import { useParams } from "react-router-dom";
 import { ValueContext } from "../../../Context";
 import professionals from "../../../data/professionals";
 import external from "../../../data/external";
+import external_courses from "../../../data/external_courses";
 
 import generatePDF from "react-to-pdf";
+
+const isHashedExternalCourse = (courseCode = "") => {
+  const code = String(courseCode).toLowerCase().trim();
+  return code in external_courses && !code.startsWith("hed");
+};
+
+const isIncludedForGp = (courseCode = "") => {
+  const code = String(courseCode).toLowerCase().trim();
+  return (
+    code in professionals ||
+    code in external ||
+    (code in external_courses && code.startsWith("hed"))
+  );
+};
 
 function Transcript() {
   const target = useRef();
@@ -65,7 +80,8 @@ function Transcript() {
         .forEach((semester) => {
           semester?.courses?.forEach((course) => {
             const code = String(course?.course_code || "").toLowerCase().trim();
-            if (!(code in professionals || code in external)) return;
+            if (isHashedExternalCourse(code)) return;
+            if (!isIncludedForGp(code)) return;
             const unitLoad = Number(course.unit_load);
             const grade = Number(course.grade);
             if (!Number.isFinite(unitLoad) || unitLoad <= 0) return;

@@ -15,6 +15,29 @@ function Results() {
   const [error, setError] = useState(null);
   const [sortMode, setSortMode] = useState("none");
 
+  const compareByName = useCallback((a, b) => {
+    const normalize = (value) =>
+      String(value ?? "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const nameCompare = normalize(a?.fullname).localeCompare(
+      normalize(b?.fullname),
+      "en",
+      {
+        sensitivity: "base",
+        numeric: true,
+      }
+    );
+
+    if (nameCompare !== 0) return nameCompare;
+
+    return normalize(a?.reg_no).localeCompare(normalize(b?.reg_no), "en", {
+      sensitivity: "base",
+      numeric: true,
+    });
+  }, []);
+
   const fetchStudents = useCallback(async () => {
     if (!class_id || !session || !semester || !level) return;
     
@@ -53,6 +76,10 @@ function Results() {
   useEffect(() => {
     fetchStudents();
   }, [fetchStudents]);
+
+  useEffect(() => {
+    setSortMode("none");
+  }, [class_id, session, semester, level]);
   
   const filename = useMemo(() => 
     `${session}: ${level} Level: ${semester === "1" ? "first semester" : "second semester"} results`,
@@ -69,20 +96,25 @@ function Results() {
     };
 
     if (sortMode === "none") {
-      sorted.sort((a, b) =>
-        String(a.fullname || "").localeCompare(String(b.fullname || ""), "en", {
-          sensitivity: "base",
-        })
-      );
+      sorted.sort(compareByName);
     } else if (sortMode === "semester_gpa") {
-      sorted.sort((a, b) => toNumber(b.gpa) - toNumber(a.gpa));
+      sorted.sort((a, b) => {
+        const diff = toNumber(b.gpa) - toNumber(a.gpa);
+        return diff !== 0 ? diff : compareByName(a, b);
+      });
     } else if (sortMode === "session_gpa") {
-      sorted.sort((a, b) => toNumber(b.session_gpa) - toNumber(a.session_gpa));
+      sorted.sort((a, b) => {
+        const diff = toNumber(b.session_gpa) - toNumber(a.session_gpa);
+        return diff !== 0 ? diff : compareByName(a, b);
+      });
     } else if (sortMode === "cgpa") {
-      sorted.sort((a, b) => toNumber(b.cgpa) - toNumber(a.cgpa));
+      sorted.sort((a, b) => {
+        const diff = toNumber(b.cgpa) - toNumber(a.cgpa);
+        return diff !== 0 ? diff : compareByName(a, b);
+      });
     }
     return sorted;
-  }, [students, sortMode]);
+  }, [students, sortMode, compareByName]);
 
   if (error) {
     return (
@@ -182,7 +214,7 @@ function Results() {
               borderRadius: "4px",
             }}
           >
-            Default Order
+            Sort A-Z
           </button>
           <button
             onClick={() => window.print()}

@@ -1,16 +1,34 @@
 import React, { useMemo } from "react";
-import professionals from "../../../../data/professionals";
-import external from "../../../../data/external";
+import external_courses from "../../../../data/external_courses";
 
-// Function to check if a course is approved for GPA calculation
-const isApprovedCourse = (courseCode) => {
-  const code = courseCode.toLowerCase();
-  return code in professionals || code in external;
+const normalizeCourseCode = (courseCode = "") =>
+  String(courseCode).toLowerCase().trim();
+
+const isHashedExternalCourse = (courseCode = "") => {
+  const code = normalizeCourseCode(courseCode);
+  return code in external_courses && !code.startsWith("hed");
 };
 
-// Function to filter approved courses
-const filterApprovedCourses = (courses) => {
-  return courses?.filter(course => isApprovedCourse(course.course_code)) || [];
+const getDisplayCourseCode = (courseCode = "") =>
+  isHashedExternalCourse(courseCode) ? `#${courseCode}` : courseCode;
+
+const getCourseTotals = (courses = []) => {
+  let totalUnits = 0;
+  let totalGp = 0;
+
+  (Array.isArray(courses) ? courses : []).forEach((course) => {
+    if (isHashedExternalCourse(course?.course_code)) return;
+    const unitLoad = Number(course?.unit_load);
+    if (!Number.isFinite(unitLoad) || unitLoad <= 0) return;
+
+    const grade = Number(course?.grade);
+    const safeGrade = Number.isFinite(grade) ? grade : 0;
+
+    totalUnits += unitLoad;
+    totalGp += unitLoad * safeGrade;
+  });
+
+  return { totalUnits, totalGp };
 };
 
 function Table({
@@ -24,23 +42,17 @@ function Table({
   overall_gp,
 }) {
   const { total_units, total_gp, gradeLabels } = useMemo(() => {
-    let total_units = 0, total_gp = 0;
+    let total_units = 0;
+    let total_gp = 0;
     const gradeLabels = ["F", "E", "D", "C", "B", "A"];
 
-    const calculateTotals = (courses) => {
-      const approvedCourses = filterApprovedCourses(courses);
-      if (approvedCourses.length > 0) {
-        approvedCourses.forEach((course) => {
-          total_units += course.unit_load;
-          total_gp += course.unit_load * course.grade;
-        });
+    [first_semester, second_semester, first_external, second_external].forEach(
+      (courseGroup) => {
+        const { totalUnits, totalGp } = getCourseTotals(courseGroup);
+        total_units += totalUnits;
+        total_gp += totalGp;
       }
-    };
-
-    calculateTotals(first_semester);
-    calculateTotals(second_semester);
-    calculateTotals(first_external);
-    calculateTotals(second_external);
+    );
 
     return { total_units, total_gp, gradeLabels };
   }, [first_semester, second_semester, first_external, second_external]);
@@ -93,7 +105,7 @@ function Table({
           {first_external?.map((course, i) => (
             <tr key={i}>
               <td className="center">{i + 1}</td>
-              <td>{course.course_code}</td>
+              <td>{getDisplayCourseCode(course.course_code)}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{course.total}</td>
@@ -116,7 +128,7 @@ function Table({
           {second_external?.map((course, i) => (
             <tr key={i}>
               <td className="center">{i + 1}</td>
-              <td>{course.course_code}</td>
+              <td>{getDisplayCourseCode(course.course_code)}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{course.total}</td>
@@ -155,7 +167,7 @@ function Table({
           {first_semester.map((course, i) => (
             <tr key={i}>
               <td className="center">{i + 1}</td>
-              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+              <td>{getDisplayCourseCode(course.course_code)}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{Number(course.total).toFixed(0)}</td>
@@ -183,7 +195,7 @@ function Table({
           {Number(level) !== 600 && first_external?.map((course, i) => (
             <tr key={`ext1-${i}`}>
               <td className="center">{first_semester.length + i + 1}</td>
-              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+              <td>{getDisplayCourseCode(course.course_code)}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{course.total}</td>
@@ -239,7 +251,7 @@ function Table({
             second_semester.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+                <td>{getDisplayCourseCode(course.course_code)}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{course.total}</td>
@@ -267,7 +279,7 @@ function Table({
           {Number(level) !== 600 && second_external?.map((course, i) => (
             <tr key={`ext2-${i}`}>
               <td className="center">{(second_semester?.length || 0) + i + 1}</td>
-              <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+              <td>{getDisplayCourseCode(course.course_code)}</td>
               <td>{course.course_title}</td>
               <td>{course.unit_load}</td>
               <td>{course.total}</td>
@@ -342,7 +354,7 @@ function Table({
             {first_external.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+                <td>{getDisplayCourseCode(course.course_code)}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{course.total}</td>
@@ -392,7 +404,7 @@ function Table({
             {second_external.map((course, i) => (
               <tr key={i}>
                 <td className="center">{i + 1}</td>
-                <td>{isApprovedCourse(course.course_code) ? course.course_code : `#${course.course_code}`}</td>
+                <td>{getDisplayCourseCode(course.course_code)}</td>
                 <td>{course.course_title}</td>
                 <td>{course.unit_load}</td>
                 <td>{course.total}</td>
