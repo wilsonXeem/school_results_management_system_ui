@@ -32,6 +32,7 @@ import ProfessionalsSessions from "./pages/Admin/ProfessionalsSessions";
 import OtherProfessionalsSessions from "./pages/Admin/ProfessionalsSessions/OtherProfessionalsSessions";
 import Finalists from "./pages/Admin/Finalists";
 import DuplicateStudents from "./pages/Admin/DuplicateStudents";
+import Temp600ThreeCourseAverage from "./pages/Admin/Temp600ThreeCourseAverage";
 import AdminLayout from "./components/AdminLayout";
 
 import Student from "./pages/Student";
@@ -197,6 +198,11 @@ function App() {
             path="/duplicate-students"
             exact
             element={withAdminLayout(<DuplicateStudents />)}
+          />
+          <Route
+            path="/admin/temp/600-three-course-average"
+            exact
+            element={withAdminLayout(<Temp600ThreeCourseAverage />)}
           />
 
           {/* <Route path="/" exact element={<TableExtractor/>}/> */}
