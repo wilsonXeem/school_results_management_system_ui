@@ -2,7 +2,7 @@ module.exports = {
   hed175: 2,
   hed171: 2,
   hed251: 2,
-  hed257: 2,
+  hed257: 1,
   hed363: 2,
   hed115: 2,
   hed176: 2,
